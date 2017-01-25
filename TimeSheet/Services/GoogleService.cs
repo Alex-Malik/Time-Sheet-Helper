@@ -11,6 +11,9 @@ using System.Threading;
 
 namespace TimeSheet.Services
 {
+    using System.Linq;
+    using TimeSheet.Services.Models;
+
     public class GoogleSheetsServiceWrapper
     {
         // If modifying these scopes, delete your previously saved credentials
@@ -54,31 +57,30 @@ namespace TimeSheet.Services
         }
 
         // TODO: Redesign with return an objects list of time sheet records.
-        public string Get(String spreadSheetId, int sheetIndex = 0)
+        public IEnumerable<RecordModel> Get(String spreadSheetId, int sheetIndex = 0)
         {
             SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
             request.IncludeGridData = true;
             
             Spreadsheet spreadsheet = request.Execute();
             if (spreadsheet == null)
-                return "No spreadsheet found.";
+                return Enumerable.Empty<RecordModel>();
 
             GridData data = spreadsheet.Sheets[sheetIndex].Data[0];
 
             if (data == null)
-                return "No data found.";
+                return Enumerable.Empty<RecordModel>();
 
-            StringBuilder results = new StringBuilder();
+            List<RecordModel> records = new List<RecordModel>();
             foreach (var row in data.RowData)
             {
-                foreach (var value in row.Values)
+                records.Add(new RecordModel
                 {
-                    results.Append(value.EffectiveValue?.StringValue + "|");
-                }
-                results.Append("\n");
+                    Content = row.Values[1]?.EffectiveValue?.StringValue
+                });
             }
 
-            return results.ToString();
+            return records;
         }
     }
 }

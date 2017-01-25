@@ -20,10 +20,15 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Style="{StaticResource Style.TextBox.Default}" Text="{Binding SpreadSheetId}"/>
-            <Button  Grid.Column="1" Style="{StaticResource Style.Button.Refresh}"/>
-            <Button  Grid.Column="2" Style="{StaticResource Style.Button.Settings}"/>
+            <Button  Grid.Column="1" Style="{StaticResource Style.Button.Refresh}" Command="{Binding RefreshCommand}"/>
+            <Button  Grid.Column="2" Style="{StaticResource Style.Button.Settings}" Command="{Binding SettingsCommand}"/>
         </Grid>
-        
-        <TextBox Grid.Row="1" Style="{StaticResource Style.TextBox.Default}" Text="{Binding Records}"/>
+
+        <ListBox x:Name="xamlListBox" Grid.Row="1" ItemsSource="{Binding Records}"
+                     Style="{DynamicResource Style.ListBox}"
+                     ItemTemplate="{DynamicResource DataTemplate.Records}"
+                     ItemContainerStyle="{DynamicResource Style.ListBoxItem}" />
+
+        <!--<TextBox Grid.Row="1" Style="{StaticResource Style.TextBox.Default}" Text="{Binding Records}"/>-->
     </Grid>
 </Page>
