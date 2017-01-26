@@ -11,6 +11,20 @@ namespace TimeSheet.Controls
 {
     public class FrameAdapter : Frame, INavigationControl
     {
+        #region Init
+
+        public FrameAdapter()
+        {
+            NavigationManager.Instance.Register(this);
+        }
+
+        ~FrameAdapter()
+        {
+            NavigationManager.Instance.Unregister(this);
+        }
+
+        #endregion
+
         #region INavigationControl Support
 
         bool INavigationControl.CanGoBack => CanGoBack;

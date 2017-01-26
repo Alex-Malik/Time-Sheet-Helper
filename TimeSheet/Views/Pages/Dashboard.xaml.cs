@@ -50,8 +50,8 @@ namespace TimeSheet.Views.Pages
         public GoogleSheetsServiceWrapper Sheets { get; }
 
         // Commands
-        public ICommand RefreshCommand => CommandsFactory.CreateFor(Refresh);
-        public ICommand SettingsCommand => CommandsFactory.CreateFor(Settings);
+        public ICommand RefreshCommand => CommandFactory.CreateFor(Refresh);
+        public ICommand SettingsCommand => CommandFactory.CreateFor(Settings);
         public ICommand UpdateCommand { get; }
         public ICommand InsertCommand { get; }
 

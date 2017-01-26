@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace TimeSheet.Commands
 {
-    public class CommandsFactory
+    public class CommandFactory
     {
         public static ICommand CreateFor(Action action)
         {

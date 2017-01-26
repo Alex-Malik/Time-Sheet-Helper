@@ -18,41 +18,35 @@ namespace TimeSheet
     /// </summary>
     public partial class App : Application
     {
-        public static IContainer Container;
+        #region Singleton Implementation
 
-        public const string ApplicationScope = "app";
+        public static App Instance { get; private set; }
+
+        // Note! That only one instance of the System.Windows.Application 
+        // class can be created per System.AppDomain.
+        public App()
+        {
+            Instance = this;
+        }
+
+        #endregion
+
+        public const string AppScope = "app";
         public const string UserScope = "user";
-        public const string LocalScope = "page";
+        public const string PageScope = "page";
 
         private ILifetimeScope _app;
         private ILifetimeScope _user;
         private ILifetimeScope _page;
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-
-            Container = CreateContainer();
-        }
-
-        protected override void OnExit(ExitEventArgs e)
-        {
-            if (_page != null)
-                _page.Dispose();
-            if (_user != null)
-                _user.Dispose();
-            if (_app != null)
-                _app.Dispose();
-
-            base.OnExit(e);
-        }
+        public IContainer Container { get; private set; }
 
         public ILifetimeScope AppplicationScope
         {
             get
             {
                 if (_app == null)
-                    _app = Container.BeginLifetimeScope(ApplicationScope);
+                    _app = Container.BeginLifetimeScope(AppScope);
                 return _app;
             }
         }
@@ -78,7 +72,7 @@ namespace TimeSheet
             EndPageScope();
             if (_user == null)
                 _user = BeginUserScope();
-            _page = _user.BeginLifetimeScope(LocalScope);
+            _page = _user.BeginLifetimeScope(PageScope);
             return _page;
         }
 
@@ -89,6 +83,27 @@ namespace TimeSheet
                 _page.Dispose();
                 _page = null;
             }
+        }
+        
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            Container = CreateContainer();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            if (_page != null)
+                _page.Dispose();
+            if (_user != null)
+                _user.Dispose();
+            if (_app != null)
+                _app.Dispose();
+
+            Container = null;
+
+            base.OnExit(e);
         }
 
         private IContainer CreateContainer()

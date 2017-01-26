@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,10 @@ namespace TimeSheet.Shared
 
         #endregion
 
+        private const string MessageControlNotRegistered = "Navigation control should be registered before navigation operation.";
+
+        private INavigationControl _control;
+
         public void GoTo<T>() where T : Page
         {
             InternalGoTo<T>();
@@ -27,11 +32,37 @@ namespace TimeSheet.Shared
             InternalGoTo<T>(args);
         }
 
+        public void GoBack()
+        {
+            if (_control == null)
+                throw new NullReferenceException(MessageControlNotRegistered);
+
+            if (_control.CanGoBack)
+                _control.GoBack();
+        }
+
+        public void Register(INavigationControl control)
+        {
+            _control = control;
+        }
+
+        public void Unregister(INavigationControl control)
+        {
+            if (_control == control)
+                _control = null;
+        }
+
         private void InternalGoTo<T>(params object[] args)
         {
-            throw new NotImplementedException();
+            if (_control == null)
+                throw new NullReferenceException(MessageControlNotRegistered);
 
-            //_control.GoTo(page, args);
+            var pageScope = App.Instance.BeginPageScope();
+            var page = pageScope.Resolve(typeof(T)) as Page;
+            //if (page is IAcceptParameters)
+            //    ((IAcceptParameters)page).SetParams(args);
+
+            _control.GoTo(page, args);
         }
     }
 

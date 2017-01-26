@@ -12,6 +12,11 @@ namespace TimeSheet.Services
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
+
+            builder
+                .RegisterType<GoogleSheetsServiceWrapper>()
+                .As<GoogleSheetsServiceWrapper>()
+                .InstancePerMatchingLifetimeScope(App.PageScope);
         }
     }
 }
