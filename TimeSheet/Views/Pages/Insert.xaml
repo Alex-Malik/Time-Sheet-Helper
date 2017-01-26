@@ -1,0 +1,49 @@
+﻿<Page x:Class="TimeSheet.Views.Pages.Insert"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TimeSheet.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="Insert">
+
+    <Grid Style="{DynamicResource Style.Grid.Container}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox Grid.Row="1" Style="{DynamicResource Style.TextBox.Message}" Text="{Binding Message}"/>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label   Grid.Column="0" Style="{DynamicResource Style.Label.Default}" Content="Message"/>
+                <Path    Grid.Column="1" Style="{DynamicResource Style.Path.Down}"/>
+                <Label   Grid.Column="2" Style="{DynamicResource Style.Label.Default}" Content="Project"/>
+                <Path    Grid.Column="3" Style="{DynamicResource Style.Path.Right}"/>
+                <TextBox Grid.Column="4" Style="{DynamicResource Style.TextBox.Project}" Text="{Binding Project}"/>
+            </Grid>
+        </Grid>
+        
+        <Grid VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>
+            <Button Grid.Column="1" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
+        </Grid>
+    </Grid>
+</Page>

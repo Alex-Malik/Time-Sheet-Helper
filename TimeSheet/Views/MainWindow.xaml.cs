@@ -26,16 +26,6 @@ namespace TimeSheet.Views
         public MainWindow()
         {
             InitializeComponent();
-
-            Loaded += OnLoaded;
-
-        }
-
-        // TODO: Consider init MainWindow and do initial navigation
-        // from App.OnStartup() method.
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            NavigationManager.Instance.GoTo<Dashboard>();
         }
     }
 

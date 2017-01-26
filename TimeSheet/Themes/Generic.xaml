@@ -37,7 +37,7 @@
 
     <!--
     <Geometry x:Key="Geometry.">
-    
+        
     </Geometry>
     -->
 
@@ -51,6 +51,22 @@
 
     <Geometry x:Key="Geometry.Insert">
         M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z
+    </Geometry>
+
+    <Geometry x:Key="Geometry.Back">
+        M18.41,7.41L17,6L11,12L17,18L18.41,16.59L13.83,12L18.41,7.41M12.41,7.41L11,6L5,12L11,18L12.41,16.59L7.83,12L12.41,7.41Z
+    </Geometry>
+
+    <Geometry x:Key="Geometry.Save">
+        M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z
+    </Geometry>
+
+    <Geometry x:Key="Geometry.Down">
+        M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z
+    </Geometry>
+
+    <Geometry x:Key="Geometry.Right">
+        M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z
     </Geometry>
 
     <!--#endregion-->
@@ -87,6 +103,23 @@
         <Setter Property="Height" Value="32"/>
         <Setter Property="Width" Value="32"/>
     </Style>
+
+    <Style x:Key="Style.Path.Down" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+        <Setter Property="Data" Value="{StaticResource Geometry.Down}"/>
+        <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+        <Setter Property="Margin" Value="8 2 64 0"/>
+        <Setter Property="Height" Value="12"/>
+        <Setter Property="Width" Value="12"/>
+    </Style>
+
+    <Style x:Key="Style.Path.Right" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+        <Setter Property="Data" Value="{StaticResource Geometry.Right}"/>
+        <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+        <Setter Property="Margin" Value="8 2 8 0"/>
+        <Setter Property="Height" Value="12"/>
+        <Setter Property="Width" Value="12"/>
+    </Style>
+
 
     <Style x:Key="Style.Grid.Container" TargetType="Grid">
         <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
@@ -128,7 +161,24 @@
         </Style.Triggers>
     </Style>
 
-    
+    <Style x:Key="Style.TextBox.Project" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox.Default}">
+        <Setter Property="Margin" Value="4 0 4 0"/>
+        <Setter Property="Padding" Value="4 8 4 0"/>
+    </Style>
+
+    <Style x:Key="Style.TextBox.Message" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox.Default}">
+        <Setter Property="Margin" Value="4 0 4 0"/>
+        <Setter Property="BorderThickness" Value="2 0 0 0"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="Style.Label.Default" TargetType="Label">
+        <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+        <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
+        <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
+        <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+    </Style>
+
     <Style x:Key="Style.Button" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
@@ -232,6 +282,14 @@
 
     <Style x:Key="Style.Button.Settings" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry.24}">
         <Setter Property="Content" Value="{StaticResource Geometry.Settings}"/>
+    </Style>
+
+    <Style x:Key="Style.Button.Back" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry.32}">
+        <Setter Property="Content" Value="{StaticResource Geometry.Back}"/>
+    </Style>
+
+    <Style x:Key="Style.Button.Save" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry.32}">
+        <Setter Property="Content" Value="{StaticResource Geometry.Save}"/>
     </Style>
 
     <Style x:Key="Style.Button.Insert" TargetType="Button">

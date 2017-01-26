@@ -108,6 +108,9 @@
     <Compile Include="Views\Pages\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Pages\Insert.xaml.cs">
+      <DependentUpon>Insert.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Pages\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -133,6 +136,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\Error.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\Insert.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

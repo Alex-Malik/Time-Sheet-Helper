@@ -16,13 +16,6 @@ namespace TimeSheet.Views.Pages
     /// </summary>
     public partial class Dashboard : Page
     {
-        // TODO: Remove after Autofac implementation.
-        public Dashboard()
-        {
-            InitializeComponent();
-            DataContext = new DashboardViewModel(new GoogleSheetsServiceWrapper());
-        }
-
         public Dashboard(GoogleSheetsServiceWrapper sheets)
         {
             InitializeComponent();
@@ -30,7 +23,7 @@ namespace TimeSheet.Views.Pages
         }
     }
 
-    public class DashboardViewModel : INotifyPropertyChanged
+    class DashboardViewModel : INotifyPropertyChanged
     {
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
         private const string DefaultSheedName     = "Alex Malik";
@@ -74,7 +67,7 @@ namespace TimeSheet.Views.Pages
 
         private void Insert()
         {
-            throw new NotImplementedException();
+            NavigationManager.Instance.GoTo<Insert>();
         }
     }
 }

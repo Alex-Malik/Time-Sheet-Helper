@@ -10,8 +10,10 @@ using System.Windows;
 
 namespace TimeSheet
 {
-    using TimeSheet.Services;
-    using TimeSheet.Shared;
+    using Services;
+    using Shared;
+    using Views;
+    using Views.Pages;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -90,6 +92,10 @@ namespace TimeSheet
             base.OnStartup(e);
 
             Container = CreateContainer();
+            MainWindow = Container.Resolve<MainWindow>();
+            MainWindow.Show();
+
+            NavigationManager.Instance.GoTo<Dashboard>();
         }
 
         protected override void OnExit(ExitEventArgs e)
