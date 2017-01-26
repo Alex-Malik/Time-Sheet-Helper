@@ -6,6 +6,6 @@
         xmlns:local="clr-namespace:TimeSheet"
         xmlns:local.controls="clr-namespace:TimeSheet.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Time Sheet Helper" Height="512" Width="768" WindowStartupLocation="CenterScreen">
     <local.controls:FrameAdapter Style="{DynamicResource Style.Frame}" Source="Pages\Dashboard.xaml"/>
 </Window>

@@ -16,19 +16,23 @@
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="128"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Style="{StaticResource Style.TextBox.Default}" Text="{Binding SpreadSheetId}"/>
-            <Button  Grid.Column="1" Style="{StaticResource Style.Button.Refresh}" Command="{Binding RefreshCommand}"/>
-            <Button  Grid.Column="2" Style="{StaticResource Style.Button.Settings}" Command="{Binding SettingsCommand}"/>
+            <TextBox Grid.Column="1" Style="{StaticResource Style.TextBox.Default}" Text="{Binding SheetName}"/>
+            <Button  Grid.Column="2" Style="{StaticResource Style.Button.Refresh}" Command="{Binding RefreshCommand}"/>
+            <Button  Grid.Column="3" Style="{StaticResource Style.Button.Settings}" Command="{Binding SettingsCommand}"/>
         </Grid>
 
         <ListBox x:Name="xamlListBox" Grid.Row="1" ItemsSource="{Binding Records}"
-                     Style="{DynamicResource Style.ListBox}"
-                     ItemTemplate="{DynamicResource DataTemplate.Records}"
-                     ItemContainerStyle="{DynamicResource Style.ListBoxItem}" />
+                 Style="{DynamicResource Style.ListBox}"
+                 ItemTemplate="{DynamicResource DataTemplate.Records}"
+                 ItemContainerStyle="{DynamicResource Style.ListBoxItem}" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                 ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
 
-        <!--<TextBox Grid.Row="1" Style="{StaticResource Style.TextBox.Default}" Text="{Binding Records}"/>-->
+        <Button Grid.Row="1" Style="{StaticResource Style.Button.Insert}" Command="{Binding InsertCommand}"/>
     </Grid>
 </Page>

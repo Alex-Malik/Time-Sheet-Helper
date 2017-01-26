@@ -12,6 +12,7 @@ using System.Threading;
 namespace TimeSheet.Services
 {
     using System.Linq;
+    using System.Threading.Tasks;
     using TimeSheet.Services.Models;
 
     public class GoogleSheetsServiceWrapper
@@ -57,30 +58,86 @@ namespace TimeSheet.Services
         }
 
         // TODO: Redesign with return an objects list of time sheet records.
-        public IEnumerable<RecordModel> Get(String spreadSheetId, int sheetIndex = 0)
+        public IEnumerable<RecordModel> Get(String spreadSheetId, String sheetName)
         {
-            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
-            request.IncludeGridData = true;
-            
-            Spreadsheet spreadsheet = request.Execute();
+            Spreadsheet spreadsheet = LoadSpreadSheet(spreadSheetId, sheetName);
             if (spreadsheet == null)
                 return Enumerable.Empty<RecordModel>();
-
-            GridData data = spreadsheet.Sheets[sheetIndex].Data[0];
-
-            if (data == null)
+            if (spreadsheet.Sheets == null)
+                return Enumerable.Empty<RecordModel>();
+            if (spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName)?.Data == null)
                 return Enumerable.Empty<RecordModel>();
 
+            GridData data = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName).Data[0];
             List<RecordModel> records = new List<RecordModel>();
-            foreach (var row in data.RowData)
+            foreach (var row in data.RowData.Skip(1)) // TODO: Move skip count to settings.
             {
+                // TODO: Implement cells merge.
+
                 records.Add(new RecordModel
                 {
-                    Content = row.Values[1]?.EffectiveValue?.StringValue
+                    CreatedAt = GetDateTime(GetValue(row, 0)),
+                    Content   = GetString(GetValue(row, 1)),
+                    Hours     = GetDouble(GetValue(row, 2)),
+                    Project   = GetString(GetValue(row, 3)),
+                    StartedAt = GetDateTime(GetValue(row, 4)),
+                    EndedAt   = GetDateTime(GetValue(row, 5))
                 });
             }
 
-            return records;
+            return records
+                .Where(r => r.CreatedAt.HasValue
+                     && !String.IsNullOrEmpty(r.Content)
+                     && !String.IsNullOrEmpty(r.Project)
+                     && r.Hours.HasValue)
+                .OrderByDescending(r => r.CreatedAt.Value);
+        }
+
+        public Task<IEnumerable<RecordModel>> GetAsync(String spreadSheetId, int sheetIndex = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Spreadsheet LoadSpreadSheet(String spreadSheetId, String sheetName)
+        {
+            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            request.IncludeGridData = true;
+            request.Ranges = sheetName;
+
+            return request.Execute();
+        }
+
+        // TODO: Consider using extension for next actions.
+
+        private CellData GetValue(RowData row, int index)
+        {
+            if (row == null) return null;
+            if (row.Values == null) return null;
+            if (row.Values.Count < index + 1) return null;
+
+            return row.Values[index];
+        }
+
+        private DateTime? GetDateTime(CellData cell)
+        {
+            if (cell == null) return null;
+            if (cell.EffectiveFormat == null) return null;
+            if (cell.EffectiveFormat.NumberFormat == null) return null;
+            if (cell.EffectiveFormat.NumberFormat.Type != "DATE") return null;
+            if (cell.EffectiveValue == null) return null;
+            if (cell.EffectiveValue.NumberValue.HasValue == false) return null;
+
+            return DateTime.FromOADate(cell.EffectiveValue.NumberValue.Value);
+        }
+
+        private String GetString(CellData cell)
+        {
+            return cell?.EffectiveValue?.StringValue;
+        }
+
+        private Double? GetDouble(CellData cell)
+        {
+            return cell?.EffectiveValue?.NumberValue;
         }
     }
 }

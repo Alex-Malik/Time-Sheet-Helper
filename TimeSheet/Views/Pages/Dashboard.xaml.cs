@@ -9,6 +9,7 @@ namespace TimeSheet.Views.Pages
     using Services;
     using Services.Models;
     using Shared;
+    using System;
 
     /// <summary>
     /// Interaction logic for Dashboard.xaml
@@ -32,7 +33,7 @@ namespace TimeSheet.Views.Pages
     public class DashboardViewModel : INotifyPropertyChanged
     {
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
-        private const int DefaultSheedIndex = 0;
+        private const string DefaultSheedName     = "Alex Malik";
 
         public DashboardViewModel(GoogleSheetsServiceWrapper sheets)
         {
@@ -40,7 +41,7 @@ namespace TimeSheet.Views.Pages
             Sheets.Init();
 
             SpreadSheetId = DefaultSpreadSheetId;
-            SheetIndex = DefaultSheedIndex;
+            SheetName     = DefaultSheedName;
         }
 
         // Events
@@ -53,23 +54,27 @@ namespace TimeSheet.Views.Pages
         public ICommand RefreshCommand => CommandFactory.CreateFor(Refresh);
         public ICommand SettingsCommand => CommandFactory.CreateFor(Settings);
         public ICommand UpdateCommand { get; }
-        public ICommand InsertCommand { get; }
+        public ICommand InsertCommand => CommandFactory.CreateFor(Insert);
 
         // Bindable Properties
         public string SpreadSheetId { get; set; }
-
-        public int SheetIndex { get; set; }
+        public string SheetName { get; set; }
         public IEnumerable<RecordModel> Records { get; private set; }
 
         private void Refresh()
         {
-            Records = Sheets.Get(SpreadSheetId, SheetIndex);
+            Records = Sheets.Get(SpreadSheetId, SheetName);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Records)));
         }
 
         private void Settings()
         {
             NavigationManager.Instance.GoTo<Settings>();
+        }
+
+        private void Insert()
+        {
+            throw new NotImplementedException();
         }
     }
 }
