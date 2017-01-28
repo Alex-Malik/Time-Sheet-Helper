@@ -6,28 +6,37 @@ using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace TimeSheet.Services
 {
-    using System.Linq;
-    using System.Threading.Tasks;
-    using TimeSheet.Services.Models;
+    using Models;
 
     public class GoogleSheetsServiceWrapper
     {
+        #region Private Fields
+
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
-        private static string[] _scopes = { SheetsService.Scope.SpreadsheetsReadonly };
-
-        private static string _applicationName = "Time Sheet .NET Client ID";
+        private readonly string[] _scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+        private readonly string _applicationName = "Time Sheet .NET Client ID";
 
         private SheetsService _service;
+
+        #endregion
+
+        #region Init
 
         public GoogleSheetsServiceWrapper()
         {
         }
+
+        #endregion
+
+        #region Public Methods
 
         public void Init()
         {
@@ -56,8 +65,7 @@ namespace TimeSheet.Services
                 ApplicationName = _applicationName,
             });
         }
-
-        // TODO: Redesign with return an objects list of time sheet records.
+        
         public IEnumerable<RecordModel> Get(String spreadSheetId, String sheetName)
         {
             Spreadsheet spreadsheet = LoadSpreadSheet(spreadSheetId, sheetName);
@@ -77,11 +85,11 @@ namespace TimeSheet.Services
                 records.Add(new RecordModel
                 {
                     CreatedAt = GetDateTime(GetValue(row, 0)),
-                    Content   = GetString(GetValue(row, 1)),
-                    Hours     = GetDouble(GetValue(row, 2)),
-                    Project   = GetString(GetValue(row, 3)),
+                    Content = GetString(GetValue(row, 1)),
+                    Hours = GetDouble(GetValue(row, 2)),
+                    Project = GetString(GetValue(row, 3)),
                     StartedAt = GetDateTime(GetValue(row, 4)),
-                    EndedAt   = GetDateTime(GetValue(row, 5))
+                    EndedAt = GetDateTime(GetValue(row, 5))
                 });
             }
 
@@ -97,6 +105,10 @@ namespace TimeSheet.Services
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private Spreadsheet LoadSpreadSheet(String spreadSheetId, String sheetName)
         {
@@ -139,5 +151,7 @@ namespace TimeSheet.Services
         {
             return cell?.EffectiveValue?.NumberValue;
         }
+
+        #endregion
     }
 }
