@@ -38,6 +38,14 @@ namespace TimeSheet.Views.Pages
         {
             Sheets = sheets;
             Sheets.Init();
+
+            Project = String.Empty;
+            Message = String.Empty;
+            CreatedAt = DateTime.Now;
+            StartedAtHours = 10;
+            StartedAtMinutes = 0;
+            EndedAtHours = 18;
+            EndedAtMinutes = 0;
         }
 
         // Events
@@ -51,8 +59,14 @@ namespace TimeSheet.Views.Pages
         public ICommand GoBackCommand => CommandFactory.CreateFor(GoBack);
 
         // Bindable Properties
-        public string Project { get; set; }
-        public string Message { get; set; }
+        public String   Project { get; set; }
+        public String   Message { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public String   FormattedCreatedAt => CreatedAt.ToString("yyyy-MM-dd");
+        public Int32    StartedAtHours { get; set; }
+        public Int32    StartedAtMinutes { get; set; }
+        public Int32    EndedAtHours { get; set; }
+        public Int32    EndedAtMinutes { get; set; }
 
         private void Save()
         {

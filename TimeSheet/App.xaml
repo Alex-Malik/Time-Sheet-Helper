@@ -1,8 +1,505 @@
-﻿<Application x:Class="TimeSheet.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TimeSheet">
+﻿<Application 
+    x:Class="TimeSheet.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:TimeSheet"
+    xmlns:local.controls="clr-namespace:TimeSheet.Controls"
+    xmlns:System="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
-        <ResourceDictionary Source="Themes/Generic.xaml"/>
+        <!--#region Colors & Brushes-->
+
+        <Color x:Key="Color.Default.Background">#FFFFFF</Color>
+        <Color x:Key="Color.Default.Background.LightGrey">#f3f3f3</Color>
+        <Color x:Key="Color.Default.Background.DarkGrey">#dddddd</Color>
+        <Color x:Key="Color.Default.Foreground">#000000</Color>
+        <Color x:Key="Color.Default.Foreground.LightGrey">#bcbcbc</Color>
+        <Color x:Key="Color.Default.Foreground.DarkGrey">#737373</Color>
+
+        <SolidColorBrush x:Key="Brush.Default.Background" Color="{StaticResource Color.Default.Background}" />
+        <SolidColorBrush x:Key="Brush.Default.Background.LightGrey" Color="{StaticResource Color.Default.Background.LightGrey}" />
+        <SolidColorBrush x:Key="Brush.Default.Background.DarkGrey" Color="{StaticResource Color.Default.Background.DarkGrey}" />
+        <SolidColorBrush x:Key="Brush.Default.Foreground" Color="{StaticResource Color.Default.Foreground}" />
+        <SolidColorBrush x:Key="Brush.Default.Foreground.LightGrey" Color="{StaticResource Color.Default.Foreground.LightGrey}" />
+        <SolidColorBrush x:Key="Brush.Default.Foreground.DarkGrey" Color="{StaticResource Color.Default.Foreground.DarkGrey}" />
+
+        <!--#endregion-->
+
+        <!--#region Variables-->
+
+        <Thickness x:Key="Thickness.Default" Left="4" Top="4" Right="4" Bottom="4"/>
+        <Thickness x:Key="Thickness.Default.Frame" Left="4" Top="4" Right="4" Bottom="4"/>
+
+        <CornerRadius x:Key="CornerRadius.Default" TopLeft="4" TopRight="4" BottomLeft="4" BottomRight="4"/>
+
+        <System:Double x:Key="Double.Default.FontSize">16</System:Double>
+
+        <!--#endregion-->
+
+        <!--#region Geometries-->
+
+        <!--
+            <Geometry x:Key="Geometry.">
+        
+            </Geometry>
+        -->
+
+        <Geometry x:Key="Geometry.Refresh">
+            M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Settings">
+            M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Insert">
+            M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Back">
+            M18.41,7.41L17,6L11,12L17,18L18.41,16.59L13.83,12L18.41,7.41M12.41,7.41L11,6L5,12L11,18L12.41,16.59L7.83,12L12.41,7.41Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Save">
+            M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Down">
+            M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Right">
+            M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.ClockIn">
+            M2.21,0.79L0.79,2.21L4.8,6.21L3,8H8V3L6.21,4.8M12,8C8.14,8 5,11.13 5,15A7,7 0 0,0 12,22C15.86,22 19,18.87 19,15A7,7 0 0,0 12,8M12,10.15C14.67,10.15 16.85,12.32 16.85,15A4.85,4.85 0 0,1 12,19.85C9.32,19.85 7.15,17.68 7.15,15A4.85,4.85 0 0,1 12,10.15M11,12V15.69L14.19,17.53L14.94,16.23L12.5,14.82V12
+        </Geometry>
+
+        <Geometry x:Key="Geometry.ClockOut">
+            M18,1L19.8,2.79L15.79,6.79L17.21,8.21L21.21,4.21L23,6V1M12,8C8.14,8 5,11.13 5,15A7,7 0 0,0 12,22C15.86,22 19,18.87 19,15A7,7 0 0,0 12,8M12,10.15C14.67,10.15 16.85,12.32 16.85,15A4.85,4.85 0 0,1 12,19.85C9.32,19.85 7.15,17.68 7.15,15A4.85,4.85 0 0,1 12,10.15M11,12V15.69L14.19,17.53L14.94,16.23L12.5,14.82V12
+        </Geometry>
+
+        <!--#endregion-->
+
+        <!--#region Styles-->
+
+        <Style x:Key="Style.Frame" TargetType="Frame">
+            <Setter Property="Margin" Value="{StaticResource Thickness.Default.Frame}"/>
+            <Setter Property="Padding" Value="{StaticResource Thickness.Default.Frame}"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+
+            <Setter Property="NavigationUIVisibility" Value="Hidden"/>
+        </Style>
+
+        
+        <Style x:Key="Style.Path" TargetType="Path">
+            <Setter Property="Stretch" Value="Uniform"/>
+        </Style>
+
+        <Style x:Key="Style.Path.16" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="Width" Value="16"/>
+        </Style>
+
+        <Style x:Key="Style.Path.24" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Width" Value="24"/>
+        </Style>
+
+        <Style x:Key="Style.Path.32" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="32"/>
+        </Style>
+
+        <Style x:Key="Style.Path.Down" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+            <Setter Property="Data" Value="{StaticResource Geometry.Down}"/>
+            <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Margin" Value="8 2 64 0"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Width" Value="12"/>
+        </Style>
+
+        <Style x:Key="Style.Path.Right" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+            <Setter Property="Data" Value="{StaticResource Geometry.Right}"/>
+            <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Margin" Value="8 2 8 0"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Width" Value="12"/>
+        </Style>
+
+        <Style x:Key="Style.Path.ClockIn" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+            <Setter Property="Data" Value="{StaticResource Geometry.ClockIn}"/>
+            <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="32"/>
+
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="Style.Path.ClockOut" TargetType="Path" BasedOn="{StaticResource Style.Path}">
+            <Setter Property="Data" Value="{StaticResource Geometry.ClockOut}"/>
+            <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="32"/>
+
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+
+        <Style x:Key="Style.Grid.Container" TargetType="Grid">
+            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+        </Style>
+
+
+        <Style x:Key="Style.TextBox" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost" TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Style.TextBox.Default" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox}">
+            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Default.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="BorderThickness" Value="0 0 0 2"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Style.TextBox.Project" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox.Default}">
+            <Setter Property="Margin" Value="4 0 4 0"/>
+            <Setter Property="Padding" Value="4 8 4 0"/>
+        </Style>
+
+        <Style x:Key="Style.TextBox.Message" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox.Default}">
+            <Setter Property="Margin" Value="4 0 4 0"/>
+            <Setter Property="BorderThickness" Value="2 0 0 0"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="Style.TextBox.CreatedAt" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox.Default}">
+            <Setter Property="Margin" Value="0 16 0 0"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="Style.TextBox.Time" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox.Default}">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Padding" Value="0 0 0 0"/>
+            <Setter Property="FontSize" Value="40"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        
+        
+        <Style x:Key="Style.Label.Default" TargetType="Label">
+            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+        </Style>
+
+        <Style x:Key="Style.TextBlock.Default" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+            <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
+        </Style>
+
+        
+        <Style x:Key="Style.Button" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="MyContentPresenter" 
+                                          Margin="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}" 
+                                          TextElement.Foreground="{TemplateBinding Foreground}" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Style.Button.Geometry" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Style.Button.Geometry.16" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="{StaticResource CornerRadius.Default}"
+                            SnapsToDevicePixels="True">
+                            <Path Style="{StaticResource Style.Path.16}"
+                              Fill="{TemplateBinding Foreground}"
+                              Data="{TemplateBinding Content}"
+                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Style.Button.Geometry.24" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="{StaticResource CornerRadius.Default}"
+                            SnapsToDevicePixels="True">
+                            <Path Style="{StaticResource Style.Path.24}"
+                              Fill="{TemplateBinding Foreground}"
+                              Data="{TemplateBinding Content}"
+                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Style.Button.Geometry.32" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="{StaticResource CornerRadius.Default}"
+                            SnapsToDevicePixels="True">
+                            <Path Style="{StaticResource Style.Path.32}"
+                              Fill="{TemplateBinding Foreground}"
+                              Data="{TemplateBinding Content}"
+                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Style.Button.Refresh" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry.24}">
+            <Setter Property="Content" Value="{StaticResource Geometry.Refresh}"/>
+        </Style>
+
+        <Style x:Key="Style.Button.Settings" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry.24}">
+            <Setter Property="Content" Value="{StaticResource Geometry.Settings}"/>
+        </Style>
+
+        <Style x:Key="Style.Button.Back" TargetType="Button" BasedOn="{StaticResource Style.Button.Geometry.32}">
+            <Setter Property="Content" Value="{StaticResource Geometry.Back}"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+
+        <Style x:Key="Style.Button.Save" TargetType="Button" BasedOn="{StaticResource Style.Button}">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Background}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+
+            <Setter Property="Content">
+                <Setter.Value>
+                    <Grid Margin="4 4 4 4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Path      Grid.Column="0" Style="{StaticResource Style.Path.24}" Data="{StaticResource Geometry.Save}"
+                                   Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" Margin="8 0"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource Style.TextBlock.Default}" Text="SAVE" Margin="8 0" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"
+                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+                    </Grid>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Style.Button.Insert" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="28"
+                            SnapsToDevicePixels="True">
+                            <Path Style="{StaticResource Style.Path.32}"
+                              Fill="{TemplateBinding Foreground}"
+                              Data="{TemplateBinding Content}"
+                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0 0 32 32"/>
+            <Setter Property="Padding" Value="8 8 8 8"/>
+            <Setter Property="Content" Value="{StaticResource Geometry.Insert}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Background}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        
+        <Style x:Key="Style.ListBox" TargetType="ListBox">
+            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+
+        <Style x:Key="Style.ListBoxItem" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border>
+                            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <Style x:Key="Style.Calendar.Default" TargetType="Calendar">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Default.Background}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+        </Style>
+        
+        <!--#endregion-->
+
+        <!--#region Data Templates-->
+
+        <Style x:Key="Style.DataTemplate.Button" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Padding" Value="0 0 0 0"/>
+            <Setter Property="Foreground" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+        </Style>
+
+        <Style x:Key="Style.DataTemplate.TextBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+            <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
+        </Style>
+
+        <DataTemplate x:Key="DataTemplate.Records">
+            <Button Style="{StaticResource Style.DataTemplate.Button}">
+                <Grid Style="{StaticResource Style.Grid.Container}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Style="{StaticResource Style.DataTemplate.TextBlock}" Text="{Binding FormatedCreatedAt}" Margin="0 0 8 0"/>
+                    <TextBlock Grid.Column="1" Style="{StaticResource Style.DataTemplate.TextBlock}" Text="{Binding Content}" Margin="8 0 8 0"/>
+                    <TextBlock Grid.Column="2" Style="{StaticResource Style.DataTemplate.TextBlock}" Text="{Binding FormatedHours}" HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Column="3" Style="{StaticResource Style.DataTemplate.TextBlock}" Text="{Binding Project}" HorizontalAlignment="Right"/>
+                </Grid>
+            </Button>
+        </DataTemplate>
+
+        <!--#endregion-->
     </Application.Resources>
 </Application>

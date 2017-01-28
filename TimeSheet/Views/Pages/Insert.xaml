@@ -5,7 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TimeSheet.Views.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      d:DesignHeight="512" 
+      d:DesignWidth="768"
       Title="Insert">
 
     <Grid Style="{DynamicResource Style.Grid.Container}">
@@ -14,6 +15,62 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!--Grid with calendars and timepickers-->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>
+                    <Button Grid.Column="1" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox  Grid.Row="0" Style="{DynamicResource Style.TextBox.CreatedAt}" Text="{Binding FormattedCreatedAt, Mode=OneWay}"/>
+                <Calendar Grid.Row="1" Style="{DynamicResource Style.Calendar.Default}" SelectedDate="{Binding CreatedAt}"/>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!--StartedAt Section-->
+                <Path    Grid.Row="0" Grid.Column="0" Style="{DynamicResource Style.Path.ClockIn}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtHours}"/>
+                <TextBox Grid.Row="0" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtMinutes}"/>
+                <!--TODO: Add buttons increment/decrement-->
+
+                <!--EndedAt Section-->
+                <Path    Grid.Row="1" Grid.Column="0" Style="{DynamicResource Style.Path.ClockOut}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtHours}"/>
+                <TextBox Grid.Row="1" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtMinutes}"/>
+                <!--TODO: Add buttons increment/decrement-->
+            </Grid>
+        </Grid>
+        
+        <!--Grid with textboxes for Message and Project-->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -35,15 +92,6 @@
                 <Path    Grid.Column="3" Style="{DynamicResource Style.Path.Right}"/>
                 <TextBox Grid.Column="4" Style="{DynamicResource Style.TextBox.Project}" Text="{Binding Project}"/>
             </Grid>
-        </Grid>
-        
-        <Grid VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>
-            <Button Grid.Column="1" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
         </Grid>
     </Grid>
 </Page>
