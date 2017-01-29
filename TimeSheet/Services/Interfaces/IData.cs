@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimeSheet.Services.Interfaces
 {
-    public interface IRecord
+    public interface IData
     {
         DateTime? CreatedAt { get; set; }
         String    Content   { get; set; }

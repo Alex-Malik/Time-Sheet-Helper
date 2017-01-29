@@ -1,38 +1,47 @@
 ﻿using System;
+using Google.Apis.Sheets.v4.Data;
 
 namespace TimeSheet.Services.Models
 {
     using Interfaces;
 
-    internal class GoogleSheetAdapterInfo : ISheetInfo
+    internal class GoogleSheetInfo : ISheetInfo
     {
-        public GoogleSheetAdapterInfo(String name, Int32 index, Int32 rows, Int32 cols)
+        public GoogleSheetInfo(Sheet sheet)
+            : this(sheet.Properties.Title,
+                   sheet.Properties.Index.Value,
+                   sheet.Properties.GridProperties.RowCount.Value,
+                   sheet.Properties.GridProperties.ColumnCount.Value)
         {
-            Name    = name;
-            Index   = index;
-            Rows    = rows;
-            Cols = cols;
+        }
+
+        public GoogleSheetInfo(String name, Int32 index, Int32 rows, Int32 cols)
+        {
+            Name  = name;
+            Index = index;
+            Rows  = rows;
+            Cols  = cols;
         }
 
         /// <summary>
         /// Gets the name (title) of the sheet.
         /// </summary>
-        public String Name    { get; }
+        public String Name  { get; }
 
         /// <summary>
         /// Gets the index of the sheet.
         /// </summary>
-        public Int32  Index   { get; }
+        public Int32  Index { get; }
 
         /// <summary>
         /// Gets the number of rows in the sheet.
         /// </summary>
-        public Int32  Rows    { get; }
+        public Int32  Rows  { get; }
 
         /// <summary>
         /// Gets the number of columns int the sheet.
         /// </summary>
-        public Int32  Cols    { get; }
+        public Int32  Cols  { get; }
 
         /// <summary>
         /// Get avaliable range of rows in A1 notation. 

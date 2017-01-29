@@ -8,7 +8,7 @@ using TimeSheet.Services.Interfaces;
 
 namespace TimeSheet.Services.Builders
 {
-    internal class CellBuilder : ICellBuilder<CellData>
+    internal class GoogleCellBuilder : ICellBuilder<CellData>
     {
         private const string NumberFormatText = "TEXT";
         private const string NumberFormatNumber = "NUMBER";
@@ -20,15 +20,15 @@ namespace TimeSheet.Services.Builders
         private const string NumberFormatScientific = "SCIENTIFIC";
 
         // TODO: Think how to implement this throgh interface.
-        public static CellBuilder New => new CellBuilder();
+        public static GoogleCellBuilder New => new GoogleCellBuilder();
 
-        public ICellBuilder<CellData> Cell => new CellBuilder();
+        public ICellBuilder<CellData> Cell => new GoogleCellBuilder();
 
         private readonly CellData _cell;
         private readonly ExtendedValue _value;
         private readonly CellFormat _format;
 
-        public CellBuilder()
+        public GoogleCellBuilder()
         {
             _cell = new CellData();
             _value = new ExtendedValue();

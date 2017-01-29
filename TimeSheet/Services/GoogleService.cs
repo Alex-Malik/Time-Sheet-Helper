@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 namespace TimeSheet.Services
 {
     using Builders;
+    using Converters;
     using Interfaces;
     using Models;
 
@@ -27,7 +28,8 @@ namespace TimeSheet.Services
         private readonly string   _applicationName = "Time Sheet .NET Client ID";
 
         private readonly SheetsService _service;
-        private readonly ICellBuilder<CellData> _cellBuilder;
+        private readonly ICellBuilder<CellData> _builder;
+        private readonly ISheetConverter _converter;
 
         #endregion
 
@@ -60,7 +62,8 @@ namespace TimeSheet.Services
                 ApplicationName = _applicationName,
             });
 
-            _cellBuilder = new CellBuilder();
+            _builder = new GoogleCellBuilder();
+            _converter = new GoogleConverter();
         }
         
         #endregion
@@ -69,131 +72,99 @@ namespace TimeSheet.Services
 
         public IEnumerable<ISheetInfo> GetSheets(String spreadSheetId)
         {
-            Spreadsheet spreadsheet = _service.Spreadsheets.Get(spreadSheetId).Execute();
-            // TODO: Consider throw an exception is spreadsheet wasn't returned.
-
-            return spreadsheet.Sheets
-                .Select(s => new GoogleSheetAdapterInfo(
-                    s.Properties.Title,
-                    s.Properties.Index.Value,
-                    s.Properties.GridProperties.RowCount.Value,
-                    s.Properties.GridProperties.ColumnCount.Value));
+            return GetSpreadSheet(spreadSheetId)
+                .Sheets
+                .Select(s => new GoogleSheetInfo(s));
         }
 
         public async Task<IEnumerable<ISheetInfo>> GetSheetsAsync(String spreadSheetId)
         {
-            Spreadsheet spreadsheet = await _service.Spreadsheets.Get(spreadSheetId).ExecuteAsync();
-            // TODO: Consider throw an exception is spreadsheet wasn't returned.
-
-            return spreadsheet.Sheets
-                .Select(s => new GoogleSheetAdapterInfo(
-                    s.Properties.Title, 
-                    s.Properties.Index.Value,
-                    s.Properties.GridProperties.RowCount.Value,
-                    s.Properties.GridProperties.ColumnCount.Value));
+            Spreadsheet spreadsheet = await GetSpreadSheetAsync(spreadSheetId);
+            return spreadsheet
+                .Sheets
+                .Select(s => new GoogleSheetInfo(s));
         }
 
-        public ISheetInfo GetSheet(String spreadSheetId, Int32 sheetIndex)
+        public ISheetInfo GetSheetInfo(String spreadSheetId, Int32 sheetIndex)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ISheetInfo> GetSheetAsync(String spreadSheetId, Int32 sheetIndex)
+        public async Task<ISheetInfo> GetSheetInfoAsync(String spreadSheetId, Int32 sheetIndex)
         {
             throw new NotImplementedException();
         }
 
-        public ISheetInfo GetSheet(String spreadSheetId, String sheetName)
+        public ISheetInfo GetSheetInfo(String spreadSheetId, String sheetName)
         {
-            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
-            request.Ranges = sheetName;
+            Spreadsheet spreadsheet = GetSpreadSheet(spreadSheetId, sheetName);
+            Sheet sheet = spreadsheet.Sheets.First();
 
-            Spreadsheet spreadsheet = _service.Spreadsheets.Get(spreadSheetId).Execute();
-            // TODO: Consider throw an exception is spreadsheet wasn't returned.
-
-            Sheet sheet = spreadsheet.Sheets[0];
-
-            return new GoogleSheetAdapterInfo(
-                    sheet.Properties.Title,
-                    sheet.Properties.Index.Value,
-                    sheet.Properties.GridProperties.RowCount.Value,
-                    sheet.Properties.GridProperties.ColumnCount.Value);
+            return new GoogleSheetInfo(sheet);
         }
 
-        public async Task<ISheetInfo> GetSheetAsync(String spreadSheetId, String sheetName)
+        public async Task<ISheetInfo> GetSheetInfoAsync(String spreadSheetId, String sheetName)
         {
-            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
-            request.Ranges = sheetName;
+            Spreadsheet spreadsheet = await GetSpreadSheetAsync(spreadSheetId, sheetName);
+            Sheet sheet = spreadsheet.Sheets.First();
 
-            Spreadsheet spreadsheet = await _service.Spreadsheets.Get(spreadSheetId).ExecuteAsync();
-            // TODO: Consider throw an exception is spreadsheet wasn't returned.
-
-            Sheet sheet = spreadsheet.Sheets[0];
-
-            return new GoogleSheetAdapterInfo(
-                    sheet.Properties.Title,
-                    sheet.Properties.Index.Value,
-                    sheet.Properties.GridProperties.RowCount.Value,
-                    sheet.Properties.GridProperties.ColumnCount.Value);
+            return new GoogleSheetInfo(sheet);
         }
-
-        public IEnumerable<IRecord> Get(String spreadSheetId, String sheetName)
+        
+        public IEnumerable<IData> GetData(String spreadSheetId, String sheetName)
         {
             // TODO: Optimize records loading.
-            //        - Remove full loading of the spreadsheet.
-            //        - Remove full loading of the sheet.
+            //        + Remove full loading of the spreadsheet.
+            //        + Remove full loading of the sheet.
             //        - Optimize cells converting (from CellData to a model).
 
-            #region New Implementation
-
             // Load sheet info.
-            ISheetInfo info = GetSheet(spreadSheetId, sheetName);
+            ISheetInfo info = GetSheetInfo(spreadSheetId, sheetName);
 
-            // TODO: Load sheet data.
-            ISheetData data = null;
+            // Load sheet data.
+            ISheetData data = GetSheetData(spreadSheetId, info);
 
-            // TODO: Convert loaded data to IRecords.
+            // Convert loaded sheet with data to a list of IData instances.
+            return _converter.Convert(data);
 
-            #endregion
-
-            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            //SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
             //request.IncludeGridData = true;
             //request.Ranges = sheetName;
 
-            Spreadsheet spreadsheet = request.Execute();
-            if (spreadsheet == null)
-                return Enumerable.Empty<RecordModel>();
-            if (spreadsheet.Sheets == null)
-                return Enumerable.Empty<RecordModel>();
-            if (spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName)?.Data == null)
-                return Enumerable.Empty<RecordModel>();
+            //Spreadsheet spreadsheet = request.Execute();
+            //if (spreadsheet == null)
+            //    return Enumerable.Empty<Data>();
+            //if (spreadsheet.Sheets == null)
+            //    return Enumerable.Empty<Data>();
+            //if (spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName)?.Data == null)
+            //    return Enumerable.Empty<Data>();
 
-            GridData griddata = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName).Data[0];
-            List<RecordModel> records = new List<RecordModel>();
-            foreach (var row in griddata.RowData.Skip(1)) // TODO: Move skip count to settings.
-            {
-                // TODO: Implement cells merge.
+            //GridData griddata = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName).Data[0];
+            //List<Data> records = new List<Data>();
+            //foreach (var row in griddata.RowData.Skip(1)) // TODO: Move skip count to settings.
+            //{
+            //    // TODO: Implement cells merge.
 
-                records.Add(new RecordModel
-                {
-                    CreatedAt = GetDate(GetValue(row, 0)),
-                    Content = GetString(GetValue(row, 1)),
-                    Hours = GetDouble(GetValue(row, 2)),
-                    Project = GetString(GetValue(row, 3)),
-                    StartedAt = GetDate(GetValue(row, 4)),
-                    EndedAt = GetDate(GetValue(row, 5))
-                });
-            }
+            //    records.Add(new Data
+            //    {
+            //        CreatedAt = GetDate(GetValue(row, 0)),
+            //        Content = GetString(GetValue(row, 1)),
+            //        Hours = GetDouble(GetValue(row, 2)),
+            //        Project = GetString(GetValue(row, 3)),
+            //        StartedAt = GetDate(GetValue(row, 4)),
+            //        EndedAt = GetDate(GetValue(row, 5))
+            //    });
+            //}
 
-            return records
-                .Where(r => r.CreatedAt.HasValue
-                     && !String.IsNullOrEmpty(r.Content)
-                     && !String.IsNullOrEmpty(r.Project)
-                     && r.Hours.HasValue)
-                .OrderByDescending(r => r.CreatedAt.Value);
+            //return records
+            //    .Where(r => r.CreatedAt.HasValue
+            //         && !String.IsNullOrEmpty(r.Content)
+            //         && !String.IsNullOrEmpty(r.Project)
+            //         && r.Hours.HasValue)
+            //    .OrderByDescending(r => r.CreatedAt.Value);
         }
 
-        public Task<IEnumerable<RecordModel>> GetAsync(String spreadSheetId, int sheetIndex = 0)
+        public Task<IEnumerable<Data>> GetAsync(String spreadSheetId, int sheetIndex = 0)
         {
             throw new NotImplementedException();
         }
@@ -201,11 +172,6 @@ namespace TimeSheet.Services
         /// <summary>
         /// Creates and inserts new time record with wollowing data to the timesheet.
         /// </summary>
-        /// <param name="date">The date mark of the record.</param>
-        /// <param name="message"></param>
-        /// <param name="project"></param>
-        /// <param name="startAt"></param>
-        /// <param name="endAt"></param>
         public void Insert(String spreadSheetId, String sheetName, DateTime date, String message, String project, Double hours, DateTime startAt, DateTime endAt)
         {
             // TODO: Consider using record model for input values.
@@ -215,12 +181,12 @@ namespace TimeSheet.Services
             RowData appendingRow = new RowData
             {
                 Values = new[] {
-                    CellBuilder.New.FromDate(date).Build(),
-                    CellBuilder.New.FromString(message).Build(),
-                    CellBuilder.New.FromDouble(hours).Build(),
-                    CellBuilder.New.FromString(project).Build(),
-                    CellBuilder.New.FromTime(startAt).Build(),
-                    CellBuilder.New.FromTime(endAt).Build()
+                    GoogleCellBuilder.New.FromDate(date).Build(),
+                    GoogleCellBuilder.New.FromString(message).Build(),
+                    GoogleCellBuilder.New.FromDouble(hours).Build(),
+                    GoogleCellBuilder.New.FromString(project).Build(),
+                    GoogleCellBuilder.New.FromTime(startAt).Build(),
+                    GoogleCellBuilder.New.FromTime(endAt).Build()
                 }
             };
 
@@ -243,6 +209,33 @@ namespace TimeSheet.Services
 
         #region Private Methods
         
+        private Spreadsheet GetSpreadSheet(String spreadSheetId, String range = null, Boolean includeData = false)
+        {
+            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            request.Ranges = range;
+            request.IncludeGridData = includeData;
+            // TODO: Consider throw an exception is spreadsheet wasn't returned.
+
+            return request.Execute();
+        }
+
+        private Task<Spreadsheet> GetSpreadSheetAsync(String spreadSheetId, String range = null, Boolean includeData = false)
+        {
+            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            request.Ranges = range;
+            request.IncludeGridData = includeData;
+
+            return request.ExecuteAsync();
+        }
+
+        private ISheetData GetSheetData(String spreadSheetId, ISheetInfo info)
+        {
+            Spreadsheet spreadSheet = GetSpreadSheet(spreadSheetId, info.AvaliableRows, true);  // TODO: Consider get avaliable range.
+            Sheet sheet = spreadSheet.Sheets.First();
+
+            return new GoogleSheetData(sheet);
+        }
+
         // TODO: Consider using extension for next actions.
 
         private CellData GetValue(RowData row, int index)

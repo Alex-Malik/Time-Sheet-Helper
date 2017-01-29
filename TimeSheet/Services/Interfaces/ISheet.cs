@@ -14,8 +14,8 @@ namespace TimeSheet.Services.Interfaces
 
     public interface ISheetInfo : ISheet
     {
-        Int32  Rows    { get; }
-        Int32  Cols    { get; }
+        Int32  Rows { get; }
+        Int32  Cols { get; }
         String AvaliableRows  { get; }
         String AvaliableCols  { get; }
         String AvaliableRange { get; }
@@ -35,5 +35,15 @@ namespace TimeSheet.Services.Interfaces
     public interface ICol
     {
 
+    }
+
+    public interface ICell
+    {
+
+    }
+
+    public interface ICell<T> : ICell
+    {
+        T Value { get; }
     }
 }

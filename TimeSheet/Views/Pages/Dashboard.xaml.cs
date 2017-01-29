@@ -42,19 +42,19 @@ namespace TimeSheet.Views.Pages
         public GoogleService Sheets { get; }
 
         // Commands
-        public ICommand RefreshCommand => CommandFactory.CreateFor(Refresh);
+        public ICommand RefreshCommand  => CommandFactory.CreateFor(Refresh);
         public ICommand SettingsCommand => CommandFactory.CreateFor(Settings);
-        public ICommand UpdateCommand { get; }
-        public ICommand InsertCommand => CommandFactory.CreateFor(Insert);
+        public ICommand UpdateCommand   { get; }
+        public ICommand InsertCommand   => CommandFactory.CreateFor(Insert);
 
         // Bindable Properties
         public string SpreadSheetId { get; set; }
-        public string SheetName { get; set; }
-        public IEnumerable<IRecord> Records { get; private set; }
+        public string SheetName     { get; set; }
+        public IEnumerable<IData> Records { get; private set; }
 
         private void Refresh()
         {
-            Records = Sheets.Get(SpreadSheetId, SheetName);
+            Records = Sheets.GetData(SpreadSheetId, SheetName);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Records)));
         }
 

@@ -4,7 +4,7 @@ namespace TimeSheet.Services.Models
 {
     using Interfaces;
 
-    public class RecordModel : IRecord
+    public class Data : IData
     {
         public DateTime? CreatedAt { get; set; }
         public String    Content { get; set; }
