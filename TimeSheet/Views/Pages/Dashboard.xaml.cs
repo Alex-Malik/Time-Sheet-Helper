@@ -7,9 +7,8 @@ namespace TimeSheet.Views.Pages
 {
     using Commands;
     using Services;
-    using Services.Models;
+    using Services.Interfaces;
     using Shared;
-    using System;
 
     /// <summary>
     /// Interaction logic for Dashboard.xaml
@@ -51,7 +50,7 @@ namespace TimeSheet.Views.Pages
         // Bindable Properties
         public string SpreadSheetId { get; set; }
         public string SheetName { get; set; }
-        public IEnumerable<RecordModel> Records { get; private set; }
+        public IEnumerable<IRecord> Records { get; private set; }
 
         private void Refresh()
         {

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace TimeSheet.Services
 {
+    using Builders;
     using Interfaces;
     using Models;
 
@@ -65,10 +66,101 @@ namespace TimeSheet.Services
         #endregion
 
         #region Public Methods
-                
-        public IEnumerable<RecordModel> Get(String spreadSheetId, String sheetName)
+
+        public IEnumerable<ISheetInfo> GetSheets(String spreadSheetId)
         {
-            Spreadsheet spreadsheet = LoadSpreadSheet(spreadSheetId, sheetName);
+            Spreadsheet spreadsheet = _service.Spreadsheets.Get(spreadSheetId).Execute();
+            // TODO: Consider throw an exception is spreadsheet wasn't returned.
+
+            return spreadsheet.Sheets
+                .Select(s => new GoogleSheetAdapterInfo(
+                    s.Properties.Title,
+                    s.Properties.Index.Value,
+                    s.Properties.GridProperties.RowCount.Value,
+                    s.Properties.GridProperties.ColumnCount.Value));
+        }
+
+        public async Task<IEnumerable<ISheetInfo>> GetSheetsAsync(String spreadSheetId)
+        {
+            Spreadsheet spreadsheet = await _service.Spreadsheets.Get(spreadSheetId).ExecuteAsync();
+            // TODO: Consider throw an exception is spreadsheet wasn't returned.
+
+            return spreadsheet.Sheets
+                .Select(s => new GoogleSheetAdapterInfo(
+                    s.Properties.Title, 
+                    s.Properties.Index.Value,
+                    s.Properties.GridProperties.RowCount.Value,
+                    s.Properties.GridProperties.ColumnCount.Value));
+        }
+
+        public ISheetInfo GetSheet(String spreadSheetId, Int32 sheetIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ISheetInfo> GetSheetAsync(String spreadSheetId, Int32 sheetIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISheetInfo GetSheet(String spreadSheetId, String sheetName)
+        {
+            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            request.Ranges = sheetName;
+
+            Spreadsheet spreadsheet = _service.Spreadsheets.Get(spreadSheetId).Execute();
+            // TODO: Consider throw an exception is spreadsheet wasn't returned.
+
+            Sheet sheet = spreadsheet.Sheets[0];
+
+            return new GoogleSheetAdapterInfo(
+                    sheet.Properties.Title,
+                    sheet.Properties.Index.Value,
+                    sheet.Properties.GridProperties.RowCount.Value,
+                    sheet.Properties.GridProperties.ColumnCount.Value);
+        }
+
+        public async Task<ISheetInfo> GetSheetAsync(String spreadSheetId, String sheetName)
+        {
+            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            request.Ranges = sheetName;
+
+            Spreadsheet spreadsheet = await _service.Spreadsheets.Get(spreadSheetId).ExecuteAsync();
+            // TODO: Consider throw an exception is spreadsheet wasn't returned.
+
+            Sheet sheet = spreadsheet.Sheets[0];
+
+            return new GoogleSheetAdapterInfo(
+                    sheet.Properties.Title,
+                    sheet.Properties.Index.Value,
+                    sheet.Properties.GridProperties.RowCount.Value,
+                    sheet.Properties.GridProperties.ColumnCount.Value);
+        }
+
+        public IEnumerable<IRecord> Get(String spreadSheetId, String sheetName)
+        {
+            // TODO: Optimize records loading.
+            //        - Remove full loading of the spreadsheet.
+            //        - Remove full loading of the sheet.
+            //        - Optimize cells converting (from CellData to a model).
+
+            #region New Implementation
+
+            // Load sheet info.
+            ISheetInfo info = GetSheet(spreadSheetId, sheetName);
+
+            // TODO: Load sheet data.
+            ISheetData data = null;
+
+            // TODO: Convert loaded data to IRecords.
+
+            #endregion
+
+            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            //request.IncludeGridData = true;
+            //request.Ranges = sheetName;
+
+            Spreadsheet spreadsheet = request.Execute();
             if (spreadsheet == null)
                 return Enumerable.Empty<RecordModel>();
             if (spreadsheet.Sheets == null)
@@ -76,9 +168,9 @@ namespace TimeSheet.Services
             if (spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName)?.Data == null)
                 return Enumerable.Empty<RecordModel>();
 
-            GridData data = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName).Data[0];
+            GridData griddata = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName).Data[0];
             List<RecordModel> records = new List<RecordModel>();
-            foreach (var row in data.RowData.Skip(1)) // TODO: Move skip count to settings.
+            foreach (var row in griddata.RowData.Skip(1)) // TODO: Move skip count to settings.
             {
                 // TODO: Implement cells merge.
 
@@ -150,16 +242,7 @@ namespace TimeSheet.Services
         #endregion
 
         #region Private Methods
-
-        private Spreadsheet LoadSpreadSheet(String spreadSheetId, String sheetName)
-        {
-            SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
-            request.IncludeGridData = true;
-            request.Ranges = sheetName;
-
-            return request.Execute();
-        }
-
+        
         // TODO: Consider using extension for next actions.
 
         private CellData GetValue(RowData row, int index)
@@ -194,107 +277,5 @@ namespace TimeSheet.Services
         }
                 
         #endregion
-    }
-    
-    internal class CellBuilder : ICellBuilder<CellData>
-    {
-        private const string NumberFormatText       = "TEXT";
-        private const string NumberFormatNumber     = "NUMBER";
-        private const string NumberFormatPercent    = "PERCENT";
-        private const string NumberFormatCurrency   = "CURRENCY";
-        private const string NumberFormatDate       = "DATE";
-        private const string NumberFormatTime       = "TIME";
-        private const string NumberFormatDateTime   = "DATE_TIME";
-        private const string NumberFormatScientific = "SCIENTIFIC";
-
-        // TODO: Think how to implement this throgh interface.
-        public static CellBuilder New => new CellBuilder();
-
-        public ICellBuilder<CellData> Cell => new CellBuilder();
-
-        private readonly CellData      _cell;
-        private readonly ExtendedValue _value;
-        private readonly CellFormat    _format;
-
-        public CellBuilder()
-        {
-            _cell   = new CellData();
-            _value  = new ExtendedValue();
-            _format = new CellFormat();
-
-            _cell.UserEnteredValue  = _value;
-            _cell.UserEnteredFormat = _format;
-        }
-
-        public ICellBuilder<CellData> FromDate(DateTime date, String pattern = "dd.mm.yyyy")
-        {
-            _value.NumberValue = date.Date.ToOADate();
-            _format.NumberFormat = new NumberFormat
-            {
-                Type    = NumberFormatDate,
-                Pattern = pattern,
-            };
-
-            return this;
-        }
-
-        public ICellBuilder<CellData> FromTime(DateTime time, String pattern = "hh:mm")
-        {
-            // First convert datetime value to the time only value.
-            time = DateTime.Parse(time.ToShortTimeString());
-
-            _value.NumberValue = time.ToOADate();
-            _format.NumberFormat = new NumberFormat
-            {
-                Type = NumberFormatTime,
-                Pattern = pattern,
-            };
-
-            return this;
-        }
-
-        public ICellBuilder<CellData> FromDateTime(DateTime datetime, String pattern = "")
-        {
-            _value.NumberValue = datetime.ToOADate();
-            _format.NumberFormat = new NumberFormat
-            {
-                Type = NumberFormatDateTime,
-                Pattern = pattern,
-            };
-
-            return this;
-        }
-
-        public ICellBuilder<CellData> FromString(String value)
-        {
-            _value.StringValue = value;
-            return this;
-        }
-
-        public ICellBuilder<CellData> FromDouble(Double value)
-        {
-            _value.NumberValue = value;
-            return this;
-        }
-
-        public ICellBuilder<CellData> FromInt32(int value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CellData Build()
-        {
-            return _cell;
-        }
-
-        public CellData Empty()
-        {
-            _cell.UserEnteredValue  = null;
-            _cell.UserEnteredFormat = null;
-            return _cell;
-        }
-        
-        // TODO: Implement visual formatting methods 
-        // (which will add borders, paddings etc).
     }
 }
