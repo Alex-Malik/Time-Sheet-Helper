@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace TimeSheet.Services
 {
+    using Interfaces;
     using Models;
 
     public class GoogleService
@@ -25,6 +26,7 @@ namespace TimeSheet.Services
         private readonly string   _applicationName = "Time Sheet .NET Client ID";
 
         private readonly SheetsService _service;
+        private readonly ICellBuilder<CellData> _cellBuilder;
 
         #endregion
 
@@ -56,8 +58,10 @@ namespace TimeSheet.Services
                 HttpClientInitializer = credential,
                 ApplicationName = _applicationName,
             });
-        }
 
+            _cellBuilder = new CellBuilder();
+        }
+        
         #endregion
 
         #region Public Methods
@@ -80,12 +84,12 @@ namespace TimeSheet.Services
 
                 records.Add(new RecordModel
                 {
-                    CreatedAt = GetDateTime(GetValue(row, 0)),
+                    CreatedAt = GetDate(GetValue(row, 0)),
                     Content = GetString(GetValue(row, 1)),
                     Hours = GetDouble(GetValue(row, 2)),
                     Project = GetString(GetValue(row, 3)),
-                    StartedAt = GetDateTime(GetValue(row, 4)),
-                    EndedAt = GetDateTime(GetValue(row, 5))
+                    StartedAt = GetDate(GetValue(row, 4)),
+                    EndedAt = GetDate(GetValue(row, 5))
                 });
             }
 
@@ -114,18 +118,17 @@ namespace TimeSheet.Services
         {
             // TODO: Consider using record model for input values.
             // TODO: Consider using local cache for the table values.
-            
+
             // Row data to be appended (note: data must be declared as entered by user).
             RowData appendingRow = new RowData
             {
                 Values = new[] {
-                    // TODO: Consider create builder or factory for the CellData instances.
-                    new CellData { UserEnteredValue = new ExtendedValue { NumberValue = date.ToOADate() } },
-                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = message } },
-                    new CellData { UserEnteredValue = new ExtendedValue { NumberValue = hours } },
-                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = project } },
-                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = startAt.ToShortTimeString() } },
-                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = endAt.ToShortTimeString() } }
+                    CellBuilder.New.FromDate(date).Build(),
+                    CellBuilder.New.FromString(message).Build(),
+                    CellBuilder.New.FromDouble(hours).Build(),
+                    CellBuilder.New.FromString(project).Build(),
+                    CellBuilder.New.FromTime(startAt).Build(),
+                    CellBuilder.New.FromTime(endAt).Build()
                 }
             };
 
@@ -168,7 +171,7 @@ namespace TimeSheet.Services
             return row.Values[index];
         }
 
-        private DateTime? GetDateTime(CellData cell)
+        private DateTime? GetDate(CellData cell)
         {
             if (cell == null) return null;
             if (cell.EffectiveFormat == null) return null;
@@ -189,7 +192,109 @@ namespace TimeSheet.Services
         {
             return cell?.EffectiveValue?.NumberValue;
         }
-
+                
         #endregion
+    }
+    
+    internal class CellBuilder : ICellBuilder<CellData>
+    {
+        private const string NumberFormatText       = "TEXT";
+        private const string NumberFormatNumber     = "NUMBER";
+        private const string NumberFormatPercent    = "PERCENT";
+        private const string NumberFormatCurrency   = "CURRENCY";
+        private const string NumberFormatDate       = "DATE";
+        private const string NumberFormatTime       = "TIME";
+        private const string NumberFormatDateTime   = "DATE_TIME";
+        private const string NumberFormatScientific = "SCIENTIFIC";
+
+        // TODO: Think how to implement this throgh interface.
+        public static CellBuilder New => new CellBuilder();
+
+        public ICellBuilder<CellData> Cell => new CellBuilder();
+
+        private readonly CellData      _cell;
+        private readonly ExtendedValue _value;
+        private readonly CellFormat    _format;
+
+        public CellBuilder()
+        {
+            _cell   = new CellData();
+            _value  = new ExtendedValue();
+            _format = new CellFormat();
+
+            _cell.UserEnteredValue  = _value;
+            _cell.UserEnteredFormat = _format;
+        }
+
+        public ICellBuilder<CellData> FromDate(DateTime date, String pattern = "dd.mm.yyyy")
+        {
+            _value.NumberValue = date.Date.ToOADate();
+            _format.NumberFormat = new NumberFormat
+            {
+                Type    = NumberFormatDate,
+                Pattern = pattern,
+            };
+
+            return this;
+        }
+
+        public ICellBuilder<CellData> FromTime(DateTime time, String pattern = "hh:mm")
+        {
+            // First convert datetime value to the time only value.
+            time = DateTime.Parse(time.ToShortTimeString());
+
+            _value.NumberValue = time.ToOADate();
+            _format.NumberFormat = new NumberFormat
+            {
+                Type = NumberFormatTime,
+                Pattern = pattern,
+            };
+
+            return this;
+        }
+
+        public ICellBuilder<CellData> FromDateTime(DateTime datetime, String pattern = "")
+        {
+            _value.NumberValue = datetime.ToOADate();
+            _format.NumberFormat = new NumberFormat
+            {
+                Type = NumberFormatDateTime,
+                Pattern = pattern,
+            };
+
+            return this;
+        }
+
+        public ICellBuilder<CellData> FromString(String value)
+        {
+            _value.StringValue = value;
+            return this;
+        }
+
+        public ICellBuilder<CellData> FromDouble(Double value)
+        {
+            _value.NumberValue = value;
+            return this;
+        }
+
+        public ICellBuilder<CellData> FromInt32(int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CellData Build()
+        {
+            return _cell;
+        }
+
+        public CellData Empty()
+        {
+            _cell.UserEnteredValue  = null;
+            _cell.UserEnteredFormat = null;
+            return _cell;
+        }
+        
+        // TODO: Implement visual formatting methods 
+        // (which will add borders, paddings etc).
     }
 }

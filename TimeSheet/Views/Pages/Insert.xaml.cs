@@ -40,15 +40,14 @@ namespace TimeSheet.Views.Pages
         public InsertViewModel(GoogleService sheets)
         {
             Sheets = sheets;
-            //Sheets.Init();
 
-            Project = String.Empty;
-            Message = String.Empty;
+            Project   = String.Empty;
+            Message   = String.Empty;
             CreatedAt = DateTime.Now;
-            StartedAtHours = 10;
+            StartedAtHours   = 10;
             StartedAtMinutes = 0;
-            EndedAtHours = 18;
-            EndedAtMinutes = 0;
+            EndedAtHours     = 18;
+            EndedAtMinutes   = 0;
         }
 
         // Events
@@ -58,18 +57,18 @@ namespace TimeSheet.Views.Pages
         public GoogleService Sheets { get; }
 
         // Commands
-        public ICommand SaveCommand => CommandFactory.CreateFor(Save);
+        public ICommand SaveCommand   => CommandFactory.CreateFor(Save);
         public ICommand GoBackCommand => CommandFactory.CreateFor(GoBack);
 
         // Bindable Properties
-        public String   Project { get; set; }
-        public String   Message { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public String   FormattedCreatedAt => CreatedAt.ToString("yyyy-MM-dd");
-        public Int32    StartedAtHours { get; set; }
+        public String   Project          { get; set; }
+        public String   Message          { get; set; }
+        public DateTime CreatedAt        { get; set; }
+        public Int32    StartedAtHours   { get; set; }
         public Int32    StartedAtMinutes { get; set; }
-        public Int32    EndedAtHours { get; set; }
-        public Int32    EndedAtMinutes { get; set; }
+        public Int32    EndedAtHours     { get; set; }
+        public Int32    EndedAtMinutes   { get; set; }
+        public String   FormattedCreatedAt => CreatedAt.ToString("yyyy-MM-dd");
 
         private void Save()
         {
