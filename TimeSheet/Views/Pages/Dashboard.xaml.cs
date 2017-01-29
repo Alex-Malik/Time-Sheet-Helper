@@ -26,14 +26,14 @@ namespace TimeSheet.Views.Pages
     class DashboardViewModel : INotifyPropertyChanged
     {
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
-        private const string DefaultSheedName     = "Alex Malik";
+        private const string DefaultSheetName     = "Alex Malik";
 
         public DashboardViewModel(GoogleService sheets)
         {
             Sheets = sheets;
 
             SpreadSheetId = DefaultSpreadSheetId;
-            SheetName     = DefaultSheedName;
+            SheetName     = DefaultSheetName;
         }
 
         // Events

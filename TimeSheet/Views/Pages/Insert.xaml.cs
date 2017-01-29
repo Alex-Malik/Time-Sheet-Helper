@@ -73,7 +73,7 @@ namespace TimeSheet.Views.Pages
 
         private void Save()
         {
-            Sheets.Insert(DefaultSpreadSheetId, DefaultSheedName, CreatedAt, Message, Project, DateTime.Now, DateTime.Now);
+            Sheets.Insert(DefaultSpreadSheetId, DefaultSheedName, CreatedAt, Message, Project, 0, DateTime.Now, DateTime.Now);
         }
         
         private void GoBack()
