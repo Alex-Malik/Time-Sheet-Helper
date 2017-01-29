@@ -14,8 +14,8 @@ namespace TimeSheet.Services
             base.Load(builder);
 
             builder
-                .RegisterType<GoogleSheetsServiceWrapper>()
-                .As<GoogleSheetsServiceWrapper>()
+                .RegisterType<GoogleService>()
+                .As<GoogleService>()
                 .InstancePerMatchingLifetimeScope(App.PageScope);
         }
     }

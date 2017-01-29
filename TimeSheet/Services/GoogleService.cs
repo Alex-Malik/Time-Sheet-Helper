@@ -15,30 +15,22 @@ namespace TimeSheet.Services
 {
     using Models;
 
-    public class GoogleSheetsServiceWrapper
+    public class GoogleService
     {
         #region Private Fields
 
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
-        private readonly string[] _scopes = { SheetsService.Scope.SpreadsheetsReadonly };
-        private readonly string _applicationName = "Time Sheet .NET Client ID";
+        private readonly string[] _scopes = { SheetsService.Scope.Spreadsheets };
+        private readonly string   _applicationName = "Time Sheet .NET Client ID";
 
-        private SheetsService _service;
+        private readonly SheetsService _service;
 
         #endregion
 
         #region Init
 
-        public GoogleSheetsServiceWrapper()
-        {
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        public void Init()
+        public GoogleService()
         {
             UserCredential credential;
 
@@ -65,7 +57,11 @@ namespace TimeSheet.Services
                 ApplicationName = _applicationName,
             });
         }
-        
+
+        #endregion
+
+        #region Public Methods
+                
         public IEnumerable<RecordModel> Get(String spreadSheetId, String sheetName)
         {
             Spreadsheet spreadsheet = LoadSpreadSheet(spreadSheetId, sheetName);
@@ -104,6 +100,48 @@ namespace TimeSheet.Services
         public Task<IEnumerable<RecordModel>> GetAsync(String spreadSheetId, int sheetIndex = 0)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates and inserts new time record with wollowing data to the timesheet.
+        /// </summary>
+        /// <param name="date">The date mark of the record.</param>
+        /// <param name="message"></param>
+        /// <param name="project"></param>
+        /// <param name="startAt"></param>
+        /// <param name="endAt"></param>
+        public void Insert(String spreadSheetId, String sheetName, DateTime date, String message, String project, Double hours, DateTime startAt, DateTime endAt)
+        {
+            // TODO: Consider using record model for input values.
+            // TODO: Consider using local cache for the table values.
+            
+            // Row data to be appended (note: data must be declared as entered by user).
+            RowData appendingRow = new RowData
+            {
+                Values = new[] {
+                    // TODO: Consider create builder or factory for the CellData instances.
+                    new CellData { UserEnteredValue = new ExtendedValue { NumberValue = date.ToOADate() } },
+                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = message } },
+                    new CellData { UserEnteredValue = new ExtendedValue { NumberValue = hours } },
+                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = project } },
+                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = startAt.ToShortTimeString() } },
+                    new CellData { UserEnteredValue = new ExtendedValue { StringValue = endAt.ToShortTimeString() } }
+                }
+            };
+
+            // Create append cells request for the current sheet.
+            AppendCellsRequest appendRequest = new AppendCellsRequest();
+            appendRequest.SheetId = 0;
+            appendRequest.Rows = new[] { appendingRow };
+            appendRequest.Fields = "*";
+
+            Request request = new Request();
+            request.AppendCells = appendRequest;
+
+            BatchUpdateSpreadsheetRequest batchRequst = new BatchUpdateSpreadsheetRequest();
+            batchRequst.Requests = new[] { request };
+
+            _service.Spreadsheets.BatchUpdate(batchRequst, spreadSheetId).Execute();
         }
 
         #endregion

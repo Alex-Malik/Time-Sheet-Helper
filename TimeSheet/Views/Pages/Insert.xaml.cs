@@ -25,7 +25,7 @@ namespace TimeSheet.Views.Pages
     /// </summary>
     public partial class Insert : Page
     {
-        public Insert(GoogleSheetsServiceWrapper sheets)
+        public Insert(GoogleService sheets)
         {
             InitializeComponent();
             DataContext = new InsertViewModel(sheets);
@@ -34,10 +34,13 @@ namespace TimeSheet.Views.Pages
 
     class InsertViewModel : INotifyPropertyChanged
     {
-        public InsertViewModel(GoogleSheetsServiceWrapper sheets)
+        private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
+        private const string DefaultSheedName = "Alex Malik";
+
+        public InsertViewModel(GoogleService sheets)
         {
             Sheets = sheets;
-            Sheets.Init();
+            //Sheets.Init();
 
             Project = String.Empty;
             Message = String.Empty;
@@ -52,7 +55,7 @@ namespace TimeSheet.Views.Pages
         public event PropertyChangedEventHandler PropertyChanged;
 
         // IoC Properties
-        public GoogleSheetsServiceWrapper Sheets { get; }
+        public GoogleService Sheets { get; }
 
         // Commands
         public ICommand SaveCommand => CommandFactory.CreateFor(Save);
@@ -70,7 +73,7 @@ namespace TimeSheet.Views.Pages
 
         private void Save()
         {
-            throw new NotImplementedException();
+            Sheets.Insert(DefaultSpreadSheetId, DefaultSheedName, CreatedAt, Message, Project, DateTime.Now, DateTime.Now);
         }
         
         private void GoBack()

@@ -16,7 +16,7 @@ namespace TimeSheet.Views.Pages
     /// </summary>
     public partial class Dashboard : Page
     {
-        public Dashboard(GoogleSheetsServiceWrapper sheets)
+        public Dashboard(GoogleService sheets)
         {
             InitializeComponent();
             DataContext = new DashboardViewModel(sheets);
@@ -28,10 +28,9 @@ namespace TimeSheet.Views.Pages
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
         private const string DefaultSheedName     = "Alex Malik";
 
-        public DashboardViewModel(GoogleSheetsServiceWrapper sheets)
+        public DashboardViewModel(GoogleService sheets)
         {
             Sheets = sheets;
-            Sheets.Init();
 
             SpreadSheetId = DefaultSpreadSheetId;
             SheetName     = DefaultSheedName;
@@ -41,7 +40,7 @@ namespace TimeSheet.Views.Pages
         public event PropertyChangedEventHandler PropertyChanged;
 
         // IoC Properties
-        public GoogleSheetsServiceWrapper Sheets { get; }
+        public GoogleService Sheets { get; }
 
         // Commands
         public ICommand RefreshCommand => CommandFactory.CreateFor(Refresh);
