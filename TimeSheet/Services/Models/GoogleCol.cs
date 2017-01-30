@@ -15,5 +15,13 @@ namespace TimeSheet.Services.Models
         {
 
         }
+
+        public IEnumerable<ICell> Cells
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

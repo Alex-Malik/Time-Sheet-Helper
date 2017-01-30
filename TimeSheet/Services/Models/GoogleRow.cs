@@ -37,7 +37,6 @@ namespace TimeSheet.Services.Models
         {
             if (cell == null) return null;
             if (cell.EffectiveValue == null) return null;
-
             if (cell.EffectiveValue.NumberValue.HasValue)
             {
                 if (cell.EffectiveFormat?.NumberFormat != null)

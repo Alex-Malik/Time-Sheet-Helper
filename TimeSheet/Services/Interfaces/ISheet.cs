@@ -29,21 +29,21 @@ namespace TimeSheet.Services.Interfaces
 
     public interface IRow
     {
-
+        IEnumerable<ICell> Cells { get; }
     }
 
     public interface ICol
     {
-
+        IEnumerable<ICell> Cells { get; }
     }
 
     public interface ICell
     {
-
+        Object Value { get; }
     }
 
     public interface ICell<T> : ICell
     {
-        T Value { get; }
+        new T Value { get; }
     }
 }

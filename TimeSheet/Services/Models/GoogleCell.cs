@@ -22,5 +22,7 @@ namespace TimeSheet.Services.Models
         public CellData Source { get; }
 
         public T Value { get; }
+
+        object ICell.Value => Value;
     }
 }

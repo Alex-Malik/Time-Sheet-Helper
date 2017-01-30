@@ -124,9 +124,32 @@ namespace TimeSheet.Services
             // Load sheet data.
             ISheetData data = GetSheetData(spreadSheetId, info);
 
-            // Convert loaded sheet with data to a list of IData instances.
-            return _converter.Convert(data);
+            // Option I
+            //// Convert loaded sheet with data to a list of IData instances.
+            //return _converter.Convert(data);
 
+            // TODO: Find best solution between this two options.
+
+            // Option II
+            return data.Rows
+                .Select(x => x as GoogleRow)
+                .Select(x => x.Source)
+                .Select(x => new Data
+                {
+                    CreatedAt = GetDate(GetValue(x, 0)),
+                    Content   = GetString(GetValue(x, 1)),
+                    Hours     = GetDouble(GetValue(x, 2)),
+                    Project   = GetString(GetValue(x, 3)),
+                    StartedAt = GetDate(GetValue(x, 4)),
+                    EndedAt   = GetDate(GetValue(x, 5))
+                })
+                .Where(r => r.CreatedAt.HasValue
+                     && !String.IsNullOrEmpty(r.Content)
+                     && !String.IsNullOrEmpty(r.Project)
+                     && r.Hours.HasValue)
+                .OrderByDescending(r => r.CreatedAt.Value);
+
+            // OLD CODE:
             //SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
             //request.IncludeGridData = true;
             //request.Ranges = sheetName;
