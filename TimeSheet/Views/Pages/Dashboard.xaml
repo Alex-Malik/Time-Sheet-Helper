@@ -22,7 +22,7 @@
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Style="{StaticResource Style.TextBox.Default}" Text="{Binding SpreadSheetId}"/>
             <TextBox Grid.Column="1" Style="{StaticResource Style.TextBox.Default}" Text="{Binding SheetName}"/>
-            <Button  Grid.Column="2" Style="{StaticResource Style.Button.Refresh}" Command="{Binding RefreshCommand}"/>
+            <Button  Grid.Column="2" Style="{StaticResource Style.Button.Refresh}"  Command="{Binding RefreshCommand}"/>
             <Button  Grid.Column="3" Style="{StaticResource Style.Button.Settings}" Command="{Binding SettingsCommand}"/>
         </Grid>
 

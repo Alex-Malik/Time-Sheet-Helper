@@ -11,40 +11,26 @@
 
     <Grid Style="{DynamicResource Style.Grid.Container}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition MinHeight="256" Height="*"/>
+            <RowDefinition MinHeight="256" Height="*"/>
         </Grid.RowDefinitions>
-
-        <!--Grid with calendars and timepickers-->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition MinWidth="256" Width="*"/>
+                <ColumnDefinition MinWidth="256" Width="*"/>
+                <ColumnDefinition MinWidth="256" Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>
-                    <Button Grid.Column="1" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
-                </Grid>
-            </Grid>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBox  Grid.Row="0" Style="{DynamicResource Style.TextBox.CreatedAt}" Text="{Binding FormattedCreatedAt, Mode=OneWay}"/>
+                
+                <!--TODO: Add clock like in Windows status bar-->
+                
                 <Calendar Grid.Row="1" Style="{DynamicResource Style.Calendar.Default}" SelectedDate="{Binding CreatedAt}"/>
             </Grid>
-            <Grid Grid.Column="2">
+            <Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -55,22 +41,31 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <!--StartedAt Section-->
-                <Path    Grid.Row="0" Grid.Column="0" Style="{DynamicResource Style.Path.ClockIn}"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtHours}"/>
-                <TextBox Grid.Row="0" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtMinutes}"/>
+                <Path    Grid.Row="0" Grid.Column="0" Style="{DynamicResource Style.Path.ClockCalendar}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" 
+                         Style="{DynamicResource Style.TextBox.CreatedAt}" Text="{Binding FormattedCreatedAt, Mode=OneWay}"/>
+                <Path    Grid.Row="1" Grid.Column="0" Style="{DynamicResource Style.Path.ClockIn}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtHours}"/>
+                <TextBox Grid.Row="1" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtMinutes}"/>
                 <!--TODO: Add buttons increment/decrement-->
-
-                <!--EndedAt Section-->
-                <Path    Grid.Row="1" Grid.Column="0" Style="{DynamicResource Style.Path.ClockOut}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtHours}"/>
-                <TextBox Grid.Row="1" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtMinutes}"/>
+                <Path    Grid.Row="2" Grid.Column="0" Style="{DynamicResource Style.Path.ClockOut}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtHours}"/>
+                <TextBox Grid.Row="2" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtMinutes}"/>
                 <!--TODO: Add buttons increment/decrement-->
             </Grid>
+            <Grid Grid.Column="2">
+                <Grid Grid.Row="0" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>
+                    <Button Grid.Column="1" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
+                </Grid>
+            </Grid>
         </Grid>
-        
-        <!--Grid with textboxes for Message and Project-->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
