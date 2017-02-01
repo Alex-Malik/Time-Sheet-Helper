@@ -7,7 +7,7 @@
         xmlns:local.controls="clr-namespace:TimeSheet.Controls"
         mc:Ignorable="d"
         Title="Time Sheet Helper"
-        Height="512" Width="768"
+        Height="324" Width="800"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen">
     <local.controls:FrameAdapter Style="{DynamicResource Style.Frame}"/>

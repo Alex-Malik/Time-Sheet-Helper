@@ -4,103 +4,95 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TimeSheet.Views.Pages"
-      mc:Ignorable="d" 
-      d:DesignHeight="512" 
-      d:DesignWidth="768"
-      Title="Insert">
+      mc:Ignorable="d" d:DesignHeight="256" d:DesignWidth="768"
+      Title="Insert Page">
 
-    <Grid Style="{DynamicResource Style.Grid.Container}">
-        <Grid.RowDefinitions>
-            <RowDefinition MinHeight="256" Height="*"/>
-            <RowDefinition MinHeight="256" Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="256" Width="*"/>
-                <ColumnDefinition MinWidth="256" Width="*"/>
-                <ColumnDefinition MinWidth="256" Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
+    <Grid Style="{DynamicResource Style.Grid.Container}" MinHeight="256" MaxHeight="256" MinWidth="768" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="256" Width="*"/>
+            <ColumnDefinition MinWidth="256" Width="*"/>
+            <ColumnDefinition MinWidth="256" Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Calendar Grid.Column="0" Style="{DynamicResource Style.Calendar.Default}" SelectedDate="{Binding CreatedAt}"/>
+        <Grid     Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            <Grid       Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
-                <!--TODO: Add clock like in Windows status bar-->
-                
-                <Calendar Grid.Row="1" Style="{DynamicResource Style.Calendar.Default}" SelectedDate="{Binding CreatedAt}"/>
+                <TextBlock Grid.Row="0" Style="{DynamicResource Style.TextBlock.Time}" Text="{Binding FormattedCurrentTime}"/>
+                <TextBlock Grid.Row="1" Style="{DynamicResource Style.TextBlock.Date}" Text="{Binding FormattedCurrentDate}"/>
             </Grid>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="2*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
-                <Grid       Grid.Row="0">
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Path    Style="{DynamicResource Style.Path.ClockIn}"/>
+                <TextBox Style="{DynamicResource Style.TextBox.Time.Hours}"   Text="{Binding FormattedStartedAtHours, Mode=OneWay}"
+                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForStartedAtHours"/>
+                <TextBox Style="{DynamicResource Style.TextBox.Colon}"        Text=":"/>
+                <TextBox Style="{DynamicResource Style.TextBox.Time.Minutes}" Text="{Binding FormattedStartedAtMinutes, Mode=OneWay}"
+                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForStartedAtMinutes"/>
+                <Grid    Style="{DynamicResource Style.Grid.Buttons}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource Style.TextBlock.Time}" Text="{Binding FormattedCurrentTime}"/>
-                    <TextBlock Grid.Row="1" Style="{DynamicResource Style.TextBlock.Date}" Text="{Binding FormattedCurrentDate}"/>
+                    <Button Grid.Row="0" x:Name="xStartedAtIncrement" Style="{DynamicResource Style.Button.Increment}"/>
+                    <Button Grid.Row="1" x:Name="xStartedAtDecrement" Style="{DynamicResource Style.Button.Decrement}"/>
                 </Grid>
-                <StackPanel Grid.Row="2" Orientation="Horizontal">
-                    <Path    Style="{DynamicResource Style.Path.ClockIn}"/>
-                    <TextBox Style="{DynamicResource Style.TextBox.Time.Hours}"   Text="{Binding FormattedStartedAtHours, Mode=OneWay}"
-                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForStartedAtHours"/>
-                    <TextBox Style="{DynamicResource Style.TextBox.Colon}"        Text=":"/>
-                    <TextBox Style="{DynamicResource Style.TextBox.Time.Minutes}" Text="{Binding FormattedStartedAtMinutes, Mode=OneWay}"
-                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForStartedAtMinutes"/>
-                    <Grid    Style="{DynamicResource Style.Grid.Buttons}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Button Grid.Row="0" x:Name="xStartedAtIncrement" Style="{DynamicResource Style.Button.Increment}"/>
-                        <Button Grid.Row="1" x:Name="xStartedAtDecrement" Style="{DynamicResource Style.Button.Decrement}"/>
-                    </Grid>
-                </StackPanel>
-                <StackPanel Grid.Row="3" Orientation="Horizontal">
-                    <Path    Style="{DynamicResource Style.Path.ClockOut}"/>
-                    <TextBox Style="{DynamicResource Style.TextBox.Time.Hours}"   Text="{Binding FormattedEndedAtHours, Mode=OneWay}"
+            </StackPanel>
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                <Path    Style="{DynamicResource Style.Path.ClockOut}"/>
+                <TextBox Style="{DynamicResource Style.TextBox.Time.Hours}"   Text="{Binding FormattedEndedAtHours, Mode=OneWay}"
                              IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForEndedAtHours"/>
-                    <TextBox Style="{DynamicResource Style.TextBox.Colon}"        Text=":"/>
-                    <TextBox Style="{DynamicResource Style.TextBox.Time.Minutes}" Text="{Binding FormattedEndedAtMinutes, Mode=OneWay}"
+                <TextBox Style="{DynamicResource Style.TextBox.Colon}"        Text=":"/>
+                <TextBox Style="{DynamicResource Style.TextBox.Time.Minutes}" Text="{Binding FormattedEndedAtMinutes, Mode=OneWay}"
                              IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForEndedAtMinutes"/>
-                    <Grid    Style="{DynamicResource Style.Grid.Buttons}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Button Grid.Row="0" x:Name="xEndedAtIncrement" Style="{DynamicResource Style.Button.Increment}"/>
-                        <Button Grid.Row="1" x:Name="xEndedAtDecrement" Style="{DynamicResource Style.Button.Decrement}"/>
-                    </Grid>
-                </StackPanel>
-            </Grid>
-            <Button Grid.Column="2" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
-            <!--<Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>-->
+                <Grid    Style="{DynamicResource Style.Grid.Buttons}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0" x:Name="xEndedAtIncrement" Style="{DynamicResource Style.Button.Increment}"/>
+                    <Button Grid.Row="1" x:Name="xEndedAtDecrement" Style="{DynamicResource Style.Button.Decrement}"/>
+                </Grid>
+            </StackPanel>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid     Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
-            <TextBox Grid.Row="1" Style="{DynamicResource Style.TextBox.Message}" Text="{Binding Message}"/>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label   Grid.Column="0" Style="{DynamicResource Style.Label.Default}" Content="Message"/>
-                <Path    Grid.Column="1" Style="{DynamicResource Style.Path.Down}"/>
-                <Label   Grid.Column="2" Style="{DynamicResource Style.Label.Default}" Content="Project"/>
-                <Path    Grid.Column="3" Style="{DynamicResource Style.Path.Right}"/>
-                <TextBox Grid.Column="4" Style="{DynamicResource Style.TextBox.Project}" Text="{Binding Project}"/>
+                <Button Grid.Column="0" Style="{DynamicResource Style.Button.Save}"      Command="{Binding SaveCommand}"/>
+                <Button Grid.Column="1" Style="{DynamicResource Style.Button.Dashboard}" Command="{Binding GoToTimetableCommand}"/>
+                <Button Grid.Column="2" Style="{DynamicResource Style.Button.Settings}"  Command="{Binding GoToSettingsCommand}"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid    Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label   Grid.Column="0" Style="{DynamicResource Style.Label.Default}"   Content="Project"/>
+                    <TextBox Grid.Column="2" Style="{DynamicResource Style.TextBox.Project}" Text="{Binding Project}"/>
+                </Grid>
+                <Label   Grid.Row="1" Style="{DynamicResource Style.Label.Default}" Content="Message"/>
+                <TextBox Grid.Row="2" Style="{DynamicResource Style.TextBox.Message}" Text="{Binding Message}"/>
             </Grid>
         </Grid>
     </Grid>

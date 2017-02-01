@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,9 +18,8 @@ using System.Windows.Shapes;
 namespace TimeSheet.Views.Pages
 {
     using Commands;
-    using Shared;
     using Services;
-    using System.Threading;
+    using Shared;
 
     /// <summary>
     /// Interaction logic for Insert.xaml
@@ -95,11 +95,13 @@ namespace TimeSheet.Views.Pages
         public event PropertyChangedEventHandler PropertyChanged;
 
         // IoC Properties
-        public GoogleService Sheets { get; }
+        public GoogleService     Sheets     { get; }
+        public NavigationManager Navigator  { get; }
 
         // Commands
-        public ICommand SaveCommand   => CommandFactory.CreateFor(Save);
-        public ICommand GoBackCommand => CommandFactory.CreateFor(GoBack);
+        public ICommand SaveCommand          => CommandFactory.CreateFor(Save);
+        public ICommand GoToTimetableCommand => CommandFactory.CreateFor(GoToTimetable);
+        public ICommand GoToSettingsCommand  => CommandFactory.CreateFor(GoToSettings);
         public ICommand IncrementStartedAtHoursCommand   => CommandFactory.CreateFor(IncrementStartedAtHours);
         public ICommand IncrementStartedAtMinutesCommand => CommandFactory.CreateFor(IncrementStartedAtMinutes);
         public ICommand DecrementStartedAtHoursCommand   => CommandFactory.CreateFor(DecrementStartedAtHours);
@@ -136,9 +138,15 @@ namespace TimeSheet.Views.Pages
             Sheets.Insert(DefaultSpreadSheetId, DefaultSheedName, CreatedAt, Message, Project, hours, startedAt, endedAt);
         }
         
-        private void GoBack()
+        private void GoToTimetable()
         {
-            NavigationManager.Instance.GoBack();
+            // TODO: Rename Dashboard to TimeTable.
+            Navigator.GoTo<Dashboard>();
+        }
+
+        private void GoToSettings()
+        {
+            Navigator.GoTo<Settings>();
         }
 
         private void OnTimerCallback(object state)
