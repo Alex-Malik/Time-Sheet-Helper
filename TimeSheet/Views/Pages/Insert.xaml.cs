@@ -19,6 +19,7 @@ namespace TimeSheet.Views.Pages
     using Commands;
     using Shared;
     using Services;
+    using System.Threading;
 
     /// <summary>
     /// Interaction logic for Insert.xaml
@@ -29,25 +30,64 @@ namespace TimeSheet.Views.Pages
         {
             InitializeComponent();
             DataContext = new InsertViewModel(sheets);
+
+            // Setup initial bindings.
+            xStartedAtIncrement.Command = (DataContext as InsertViewModel)?.IncrementStartedAtMinutesCommand;
+            xStartedAtDecrement.Command = (DataContext as InsertViewModel)?.DecrementStartedAtMinutesCommand;
+            xEndedAtIncrement.Command   = (DataContext as InsertViewModel)?.IncrementEndedAtMinutesCommand;
+            xEndedAtDecrement.Command   = (DataContext as InsertViewModel)?.DecrementEndedAtMinutesCommand;
+        }
+
+        private void OnKeyboardFocusedChangedForStartedAtHours(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == false) return;
+            xStartedAtIncrement.Command = (DataContext as InsertViewModel)?.IncrementStartedAtHoursCommand;
+            xStartedAtDecrement.Command = (DataContext as InsertViewModel)?.DecrementStartedAtHoursCommand;
+        }
+
+        private void OnKeyboardFocusedChangedForStartedAtMinutes(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == false) return;
+            xStartedAtIncrement.Command = (DataContext as InsertViewModel)?.IncrementStartedAtMinutesCommand;
+            xStartedAtDecrement.Command = (DataContext as InsertViewModel)?.DecrementStartedAtMinutesCommand;
+        }
+
+        private void OnKeyboardFocusedChangedForEndedAtHours(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == false) return;
+            xEndedAtIncrement.Command = (DataContext as InsertViewModel)?.IncrementEndedAtHoursCommand;
+            xEndedAtDecrement.Command = (DataContext as InsertViewModel)?.DecrementEndedAtHoursCommand;
+        }
+
+        private void OnKeyboardFocusedChangedForEndedAtMinutes(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == false) return;
+            xEndedAtIncrement.Command = (DataContext as InsertViewModel)?.IncrementEndedAtMinutesCommand;
+            xEndedAtDecrement.Command = (DataContext as InsertViewModel)?.DecrementEndedAtMinutesCommand;
         }
     }
 
     class InsertViewModel : INotifyPropertyChanged
     {
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
-        private const string DefaultSheedName = "Alex Malik";
+        private const string DefaultSheedName     = "Alex Malik";
+        private readonly Timer _timer;
 
         public InsertViewModel(GoogleService sheets)
         {
             Sheets = sheets;
 
-            Project   = String.Empty;
-            Message   = String.Empty;
-            CreatedAt = DateTime.Now;
+            Project = String.Empty;
+            Message = String.Empty;
             StartedAtHours   = 10;
             StartedAtMinutes = 0;
             EndedAtHours     = 18;
             EndedAtMinutes   = 0;
+            CreatedAt        = DateTime.Now;
+            CurrentTime      = DateTime.Now;
+            CurrentDate      = DateTime.Now;
+
+            _timer = new Timer(OnTimerCallback, this, 0, 1000);
         }
 
         // Events
@@ -59,25 +99,134 @@ namespace TimeSheet.Views.Pages
         // Commands
         public ICommand SaveCommand   => CommandFactory.CreateFor(Save);
         public ICommand GoBackCommand => CommandFactory.CreateFor(GoBack);
+        public ICommand IncrementStartedAtHoursCommand   => CommandFactory.CreateFor(IncrementStartedAtHours);
+        public ICommand IncrementStartedAtMinutesCommand => CommandFactory.CreateFor(IncrementStartedAtMinutes);
+        public ICommand DecrementStartedAtHoursCommand   => CommandFactory.CreateFor(DecrementStartedAtHours);
+        public ICommand DecrementStartedAtMinutesCommand => CommandFactory.CreateFor(DecrementStartedAtMinutes);
+        public ICommand IncrementEndedAtHoursCommand     => CommandFactory.CreateFor(IncrementEndedAtHours);
+        public ICommand IncrementEndedAtMinutesCommand   => CommandFactory.CreateFor(IncrementEndedAtMinutes);
+        public ICommand DecrementEndedAtHoursCommand     => CommandFactory.CreateFor(DecrementEndedAtHours);
+        public ICommand DecrementEndedAtMinutesCommand   => CommandFactory.CreateFor(DecrementEndedAtMinutes);
 
         // Bindable Properties
         public String   Project          { get; set; }
         public String   Message          { get; set; }
+        public Int32    StartedAtHours   { get; private set; }
+        public Int32    StartedAtMinutes { get; private set; }
+        public Int32    EndedAtHours     { get; private set; }
+        public Int32    EndedAtMinutes   { get; private set; }
         public DateTime CreatedAt        { get; set; }
-        public Int32    StartedAtHours   { get; set; }
-        public Int32    StartedAtMinutes { get; set; }
-        public Int32    EndedAtHours     { get; set; }
-        public Int32    EndedAtMinutes   { get; set; }
-        public String   FormattedCreatedAt => CreatedAt.ToString("yyyy-MM-dd");
+        public DateTime CurrentTime      { get; private set; }
+        public DateTime CurrentDate      { get; private set; }
+
+        public String   FormattedStartedAtHours   => $"{StartedAtHours:00}";
+        public String   FormattedStartedAtMinutes => $"{StartedAtMinutes:00}";
+        public String   FormattedEndedAtHours     => $"{EndedAtHours:00}";
+        public String   FormattedEndedAtMinutes   => $"{EndedAtMinutes:00}";
+        public String   FormattedCurrentTime      => $"{CurrentTime.Hour:00}:{CurrentTime.Minute:00}:{CurrentTime.Second:00}";
+        public String   FormattedCurrentDate      => CurrentDate.ToString("dddd, MMMM MM, yyyy");
 
         private void Save()
         {
-            Sheets.Insert(DefaultSpreadSheetId, DefaultSheedName, CreatedAt, Message, Project, 0, DateTime.Now, DateTime.Now);
+            Double hours = (EndedAtHours + (EndedAtMinutes / 60.0)) - (StartedAtHours + (StartedAtMinutes / 60.0));
+            DateTime startedAt = DateTime.Now.Date.AddHours(StartedAtHours).AddMinutes(StartedAtMinutes);
+            DateTime endedAt   = DateTime.Now.Date.AddHours(EndedAtHours).AddMinutes(EndedAtMinutes);
+
+            Sheets.Insert(DefaultSpreadSheetId, DefaultSheedName, CreatedAt, Message, Project, hours, startedAt, endedAt);
         }
         
         private void GoBack()
         {
             NavigationManager.Instance.GoBack();
+        }
+
+        private void OnTimerCallback(object state)
+        {
+            // Update current time.
+            CurrentTime = DateTime.Now;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentTime)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedCurrentTime)));
+
+            // Update current date.
+            CurrentDate = DateTime.Now;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDate)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedCurrentDate)));
+        }
+
+        private void IncrementStartedAtHours()
+        {
+            StartedAtHours++;
+            if (StartedAtHours >= 24) StartedAtHours = 0;
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(StartedAtHours)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedStartedAtHours)));
+        }
+
+        private void IncrementStartedAtMinutes()
+        {
+            StartedAtMinutes += 5;
+            if (StartedAtMinutes >= 60) {
+                StartedAtMinutes = 0;
+                IncrementStartedAtHours();
+            }
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(StartedAtMinutes)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedStartedAtMinutes)));
+        }
+
+        private void DecrementStartedAtHours()
+        {
+            StartedAtHours--;
+            if (StartedAtHours < 0) StartedAtHours = 23;
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(StartedAtHours)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedStartedAtHours)));
+        }
+
+        private void DecrementStartedAtMinutes()
+        {
+            StartedAtMinutes -= 5;
+            if (StartedAtMinutes < 0) {
+                StartedAtMinutes = 55;
+                DecrementStartedAtHours();
+            }
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(StartedAtMinutes)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedStartedAtMinutes)));
+        }
+
+        private void IncrementEndedAtHours()
+        {
+            EndedAtHours++;
+            if (EndedAtHours >= 24) EndedAtHours = 0;
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(EndedAtHours)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedEndedAtHours)));
+        }
+
+        private void IncrementEndedAtMinutes()
+        {
+            EndedAtMinutes += 5;
+            if (EndedAtMinutes >= 60) {
+                EndedAtMinutes = 0;
+                IncrementEndedAtHours();
+            }
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(EndedAtMinutes)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedEndedAtMinutes)));
+        }
+
+        private void DecrementEndedAtHours()
+        {
+            EndedAtHours--;
+            if (EndedAtHours < 0) EndedAtHours = 23;
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(EndedAtHours)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedEndedAtHours)));
+        }
+
+        private void DecrementEndedAtMinutes()
+        {
+            EndedAtMinutes -= 5;
+            if (EndedAtMinutes < 0) {
+                EndedAtMinutes = 55;
+                DecrementEndedAtHours();
+            }
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(EndedAtMinutes)));
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedEndedAtMinutes)));
         }
     }
 }

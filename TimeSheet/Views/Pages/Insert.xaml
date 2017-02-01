@@ -31,40 +31,55 @@
                 <Calendar Grid.Row="1" Style="{DynamicResource Style.Calendar.Default}" SelectedDate="{Binding CreatedAt}"/>
             </Grid>
             <Grid Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="2*"/>
                 </Grid.RowDefinitions>
-                <Path    Grid.Row="0" Grid.Column="0" Style="{DynamicResource Style.Path.ClockCalendar}"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" 
-                         Style="{DynamicResource Style.TextBox.CreatedAt}" Text="{Binding FormattedCreatedAt, Mode=OneWay}"/>
-                <Path    Grid.Row="1" Grid.Column="0" Style="{DynamicResource Style.Path.ClockIn}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtHours}"/>
-                <TextBox Grid.Row="1" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding StartedAtMinutes}"/>
-                <!--TODO: Add buttons increment/decrement-->
-                <Path    Grid.Row="2" Grid.Column="0" Style="{DynamicResource Style.Path.ClockOut}"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtHours}"/>
-                <TextBox Grid.Row="2" Grid.Column="3" Style="{DynamicResource Style.TextBox.Time}" Text="{Binding EndedAtMinutes}"/>
-                <!--TODO: Add buttons increment/decrement-->
-            </Grid>
-            <Grid Grid.Column="2">
-                <Grid Grid.Row="0" Visibility="Collapsed">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>
-                    <Button Grid.Column="1" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
+                <Grid       Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource Style.TextBlock.Time}" Text="{Binding FormattedCurrentTime}"/>
+                    <TextBlock Grid.Row="1" Style="{DynamicResource Style.TextBlock.Date}" Text="{Binding FormattedCurrentDate}"/>
                 </Grid>
+                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <Path    Style="{DynamicResource Style.Path.ClockIn}"/>
+                    <TextBox Style="{DynamicResource Style.TextBox.Time.Hours}"   Text="{Binding FormattedStartedAtHours, Mode=OneWay}"
+                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForStartedAtHours"/>
+                    <TextBox Style="{DynamicResource Style.TextBox.Colon}"        Text=":"/>
+                    <TextBox Style="{DynamicResource Style.TextBox.Time.Minutes}" Text="{Binding FormattedStartedAtMinutes, Mode=OneWay}"
+                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForStartedAtMinutes"/>
+                    <Grid    Style="{DynamicResource Style.Grid.Buttons}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" x:Name="xStartedAtIncrement" Style="{DynamicResource Style.Button.Increment}"/>
+                        <Button Grid.Row="1" x:Name="xStartedAtDecrement" Style="{DynamicResource Style.Button.Decrement}"/>
+                    </Grid>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Orientation="Horizontal">
+                    <Path    Style="{DynamicResource Style.Path.ClockOut}"/>
+                    <TextBox Style="{DynamicResource Style.TextBox.Time.Hours}"   Text="{Binding FormattedEndedAtHours, Mode=OneWay}"
+                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForEndedAtHours"/>
+                    <TextBox Style="{DynamicResource Style.TextBox.Colon}"        Text=":"/>
+                    <TextBox Style="{DynamicResource Style.TextBox.Time.Minutes}" Text="{Binding FormattedEndedAtMinutes, Mode=OneWay}"
+                             IsKeyboardFocusedChanged="OnKeyboardFocusedChangedForEndedAtMinutes"/>
+                    <Grid    Style="{DynamicResource Style.Grid.Buttons}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" x:Name="xEndedAtIncrement" Style="{DynamicResource Style.Button.Increment}"/>
+                        <Button Grid.Row="1" x:Name="xEndedAtDecrement" Style="{DynamicResource Style.Button.Decrement}"/>
+                    </Grid>
+                </StackPanel>
             </Grid>
+            <Button Grid.Column="2" Style="{DynamicResource Style.Button.Save}" Command="{Binding SaveCommand}"/>
+            <!--<Button Grid.Column="0" Style="{DynamicResource Style.Button.Back}" Command="{Binding GoBackCommand}"/>-->
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>

@@ -91,11 +91,11 @@ namespace TimeSheet
         {
             base.OnStartup(e);
 
-            Container = CreateContainer();
+            Container  = CreateContainer();
             MainWindow = Container.Resolve<MainWindow>();
             MainWindow.Show();
 
-            NavigationManager.Instance.GoTo<Dashboard>();
+            NavigationManager.Instance.GoTo<Insert>();
         }
 
         protected override void OnExit(ExitEventArgs e)
