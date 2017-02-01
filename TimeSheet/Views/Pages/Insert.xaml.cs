@@ -77,12 +77,13 @@ namespace TimeSheet.Views.Pages
         {
             Sheets = sheets;
 
-            Project = String.Empty;
-            Message = String.Empty;
-            StartedAtHours   = 10;
-            StartedAtMinutes = 0;
-            EndedAtHours     = 18;
-            EndedAtMinutes   = 0;
+            DateTime     now = DateTime.Now;
+            Project          = String.Empty;
+            Message          = String.Empty;
+            StartedAtHours   = now.Hour >= 4  && now.Hour < 14 ? now.Hour   : 10;
+            StartedAtMinutes = now.Hour >= 4  && now.Hour < 14 ? now.Minute : 0;
+            EndedAtHours     = now.Hour >= 14 || now.Hour < 4  ? now.Hour   : 18;
+            EndedAtMinutes   = now.Hour >= 14 || now.Hour < 4  ? now.Minute : 0;
             CreatedAt        = DateTime.Now;
             CurrentTime      = DateTime.Now;
             CurrentDate      = DateTime.Now;
