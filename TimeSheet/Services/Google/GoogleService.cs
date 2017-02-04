@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,24 @@ using System.Threading.Tasks;
 
 namespace TimeSheet.Services.Google
 {
-    using global::Google.Apis.Sheets.v4.Data;
+    using Imps;
     using Interfaces;
 
     internal class GoogleService : ISheetsService
     {
         #region Private Fields
+        private const string NumberFormatText       = "TEXT";
+        private const string NumberFormatNumber     = "NUMBER";
+        private const string NumberFormatPercent    = "PERCENT";
+        private const string NumberFormatCurrency   = "CURRENCY";
+        private const string NumberFormatDate       = "DATE";
+        private const string NumberFormatTime       = "TIME";
+        private const string NumberFormatDateTime   = "DATE_TIME";
+        private const string NumberFormatScientific = "SCIENTIFIC";
+
+        private const string NumberFormatDatePattern     = "dd.mm.yyyy";
+        private const string NumberFormatTimePattern     = "hh:mm";
+        private const string NumberFormatDateTimePattern = "";
 
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
@@ -25,19 +38,32 @@ namespace TimeSheet.Services.Google
         private readonly string   _applicationName = "Time Sheet .NET Client ID";
 
         private SheetsService _service;
-
         #endregion
+
+        #region Initialize
+        public GoogleService()
+        {
+
+        }
+        #endregion Initialize
 
         public ISheet GetSheet(String spreadSheetId, String sheetName)
         {
-            Initialize();
-            Spreadsheet spreadsheet = LoadSpreadSheet(spreadSheetId, sheetName);
-            Sheet sheet = spreadsheet.Sheets.First();
+            if (String.IsNullOrEmpty(spreadSheetId))
+                throw new ArgumentNullException(nameof(spreadSheetId));
+            if (String.IsNullOrEmpty(sheetName))
+                throw new ArgumentNullException(nameof(sheetName));
 
-            return new GoogleSheetAdapter(spreadsheet, sheet);
+            Initialize();
+
+            Spreadsheet spreadSheet = LoadSpreadSheet(spreadSheetId, sheetName);
+            Sheet sheet = spreadSheet.Sheets.First();
+            // TODO: Consider throw an exception if sheet wasn't loaded.
+
+            return new GoogleSheetAdapter(spreadSheet, sheet);
         }
 
-        public ISheet GetSheet(String spreadSheetId, Int32  sheetIndex)
+        public ISheet GetSheet(String spreadSheetId, Int32 sheetIndex)
         {
             throw new NotImplementedException();
         }
@@ -83,7 +109,36 @@ namespace TimeSheet.Services.Google
 
         public void Append(ISheet sheet, IRow row)
         {
-            throw new NotImplementedException();
+            // TODO: Consider implement GoogleAPIWrapper for requests building.
+
+            RowData newRow = new RowData();
+            newRow.Values = new List<CellData>();
+
+            foreach (ICell cell in row.Cells)
+            {
+                CellData newCell = Convert(cell);
+                if (newCell != null)
+                    newRow.Values.Add(newCell);
+            }
+
+            // Create 'append cells' request for the current sheet.
+            AppendCellsRequest appendRequest = new AppendCellsRequest();
+            appendRequest.SheetId = 0;
+            appendRequest.Rows = new[] { newRow };
+            appendRequest.Fields = "*";
+
+            // Wrap it into request.
+            Request request = new Request();
+            request.AppendCells = appendRequest;
+
+            // Wrap it into batch update request.
+            BatchUpdateSpreadsheetRequest batchRequst = new BatchUpdateSpreadsheetRequest();
+            batchRequst.Requests = new[] { request };
+
+            // Finally update the sheet.
+            _service.Spreadsheets
+                .BatchUpdate(batchRequst, sheet.SpreadSheetID)
+                .Execute();
         }
 
         public void Update(ISheet sheet, IRow row)
@@ -102,16 +157,20 @@ namespace TimeSheet.Services.Google
         }
 
 
-        private void Initialize()
+        private void Initialize(bool forced = false)
         {
+            // Return back if service already initialized.
+            if (!forced && _service != null) return;
+
             UserCredential credential;
 
-            using (var stream =
-                new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream
+                ("client_secret.json", FileMode.Open, FileAccess.Read))
             {
                 string credPath = Environment.GetFolderPath(
                     Environment.SpecialFolder.Personal);
-                credPath = Path.Combine(credPath, ".credentials/sheets.googleapis.timesheet.json");
+                credPath = Path.Combine(credPath, 
+                    ".credentials/sheets.googleapis.timesheet.json");
 
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
@@ -143,35 +202,126 @@ namespace TimeSheet.Services.Google
 
             return request.Execute();
         }
-    }
 
-    // TODO: Move to the models folder.
-    public class GoogleSheetAdapter : ISheetInfo, ISheetData
-    {
-        public GoogleSheetAdapter(Spreadsheet spreadsheet, Sheet sheet)
+        private CellData Convert(ICell cell)
         {
-            throw new NotImplementedException();
+            if (cell == null)
+                return null;
+            else if (cell.Value is String || cell.Value is Char)
+                return ConvertToString(cell);
+            else if (cell.Value is Int16)
+                return ConvertToInt16(cell);
+            else if (cell.Value is Int32)
+                return ConvertToInt32(cell);
+            else if (cell.Value is Int64)
+                return ConvertToInt64(cell);
+            else if (cell.Value is Single)
+                return ConvertToSingle(cell);
+            else if (cell.Value is Double)
+                return ConvertToDouble(cell);
+            else if (cell.Value is DateTime && cell.Format?.DataType == CellDataType.Date)
+                return ConvertToDate(cell);
+            else if (cell.Value is DateTime && cell.Format?.DataType == CellDataType.Time)
+                return ConvertToTime(cell);
+            else if (cell.Value is DateTime)
+                return ConvertToDateTime(cell);
+            else
+                return ConvertToString(cell);
         }
 
-        #region ISheet Support
-        public String SpreadSheetID { get; }
+        private CellData ConvertToString(ICell cell)
+        {
+            return new CellData
+            {
+                UserEnteredValue = new ExtendedValue
+                {
+                    StringValue = (String)cell.Value
+                },
+                UserEnteredFormat = new CellFormat
+                {
+                    
+                }
+            };
+        }
 
-        public String ID    { get; }
-        public String Name  { get; }
-        public Int32  Index { get; }
-        #endregion ISheet Support
+        private CellData ConvertToInt16(ICell cell)  => ConvertToInt32(cell);
 
-        #region ISheetInfo Support
-        public Int32  RowsNumber { get; }
-        public Int32  ColsNumber { get; }
-        public String AvaliableRows  { get; }
-        public String AvaliableCols  { get; }
-        public String AvaliableRange { get; }
-        #endregion ISheetInfo Support
+        private CellData ConvertToInt32(ICell cell)  => ConvertToInt64(cell);
 
-        #region ISheetData Support
-        public IEnumerable<IRow> Rows { get; }
-        public IEnumerable<ICol> Cols { get; }
-        #endregion ISheetData Support
+        private CellData ConvertToInt64(ICell cell)  => ConvertToSingle(cell);
+
+        private CellData ConvertToSingle(ICell cell) => ConvertToDouble(cell);
+
+        private CellData ConvertToDouble(ICell cell)
+        {
+            return new CellData
+            {
+                UserEnteredValue = new ExtendedValue
+                {
+                    NumberValue = (Double)cell.Value
+                },
+                UserEnteredFormat = new CellFormat
+                {
+
+                }
+            };
+        }
+
+        private CellData ConvertToDate(ICell cell)
+        {
+            return new CellData
+            {
+                UserEnteredValue = new ExtendedValue
+                {
+                    NumberValue = ((DateTime)cell.Value).ToOADate()
+                },
+                UserEnteredFormat = new CellFormat
+                {
+                    NumberFormat = new NumberFormat
+                    {
+                        Type = NumberFormatDate,
+                        Pattern = cell.Format?.DataFormat as String ?? NumberFormatDatePattern
+                    }
+                }
+            };
+        }
+
+        private CellData ConvertToTime(ICell cell)
+        {
+            return new CellData
+            {
+                UserEnteredValue = new ExtendedValue
+                {
+                    NumberValue = ((DateTime)cell.Value).ToOADate()
+                },
+                UserEnteredFormat = new CellFormat
+                {
+                    NumberFormat = new NumberFormat
+                    {
+                        Type = NumberFormatTime,
+                        Pattern = cell.Format?.DataFormat as String ?? NumberFormatTimePattern
+                    }
+                }
+            };
+        }
+
+        private CellData ConvertToDateTime(ICell cell)
+        {
+            return new CellData
+            {
+                UserEnteredValue = new ExtendedValue
+                {
+                    NumberValue = ((DateTime)cell.Value).ToOADate()
+                },
+                UserEnteredFormat = new CellFormat
+                {
+                    NumberFormat = new NumberFormat
+                    {
+                        Type = NumberFormatDateTime,
+                        Pattern = cell.Format?.DataFormat as String ?? NumberFormatDateTimePattern
+                    }
+                }
+            };
+        }
     }
 }

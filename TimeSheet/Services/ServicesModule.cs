@@ -27,7 +27,9 @@ namespace TimeSheet.Services
             builder.RegisterType<SettingsService>().AsImplementedInterfaces()
                 .InstancePerMatchingLifetimeScope(App.AppScope);
 
-            builder.RegisterType<InsertService>().As<IInsertService>()
+            builder.RegisterType<Insert.InsertService>().As<IInsertService>()
+                .InstancePerMatchingLifetimeScope(App.PageScope);
+            builder.RegisterType<Google.GoogleService>().As<ISheetsService>()
                 .InstancePerMatchingLifetimeScope(App.PageScope);
         }
     }

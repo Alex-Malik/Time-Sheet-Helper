@@ -101,7 +101,11 @@
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
     <Compile Include="Services\Google\GoogleService.cs" />
-    <Compile Include="Services\InsertService.cs" />
+    <Compile Include="Services\Google\Imps\GoogleSheetAdapter.cs" />
+    <Compile Include="Services\Insert\Imps\InsertDataCell.cs" />
+    <Compile Include="Services\Insert\Imps\InsertDataCellFormat.cs" />
+    <Compile Include="Services\Insert\Imps\InsertDataRow.cs" />
+    <Compile Include="Services\Insert\InsertService.cs" />
     <Compile Include="Interfaces\IData.cs" />
     <Compile Include="Interfaces\ISheet.cs" />
     <Compile Include="Interfaces\ISheetsService.cs" />
@@ -181,9 +185,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\Google\Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -48,6 +48,22 @@ namespace TimeSheet.Interfaces
 
     public interface ICellFormat
     {
+        CellDataType DataType   { get; }
+        Object       DataFormat { get; }
 
+        // TODO: Consider ICellFormat architecture.
+    }
+
+    public enum CellDataType
+    {
+        String,
+        Int16,
+        Int32,
+        Int64,
+        Single,
+        Double,
+        Date,
+        Time,
+        DateTime
     }
 }

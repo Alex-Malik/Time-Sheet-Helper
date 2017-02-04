@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TimeSheet.Interfaces;
 
-namespace TimeSheet.Services
+namespace TimeSheet.Services.Insert
 {
+    using Imps;
     using Interfaces;
 
     public class InsertService : IInsertService
@@ -19,14 +19,24 @@ namespace TimeSheet.Services
 
         public InsertService(ISettingsService<IInsertSettings> settings, ISheetsService sheets)
         {
-            _sheets = sheets;
+            _sheets   = sheets;
             _settings = settings;
         }
 
         public void Save(IData data)
         {
-            // TODO: Here IData should be transformed to the IRow and sent to the ISheetsService.
-            throw new NotImplementedException();
+            ISheet sheet = _sheets.GetSheet(DefaultSpreadSheetId, DefaultSheetName);
+            IRow   row   = new InsertDataRow
+                          (new[] {
+                              new InsertDataCell(data.CreatedAt, CellDataType.Date),
+                              new InsertDataCell(data.Content),
+                              new InsertDataCell(data.Hours),
+                              new InsertDataCell(data.Project),
+                              new InsertDataCell(data.StartedAt, CellDataType.Time),
+                              new InsertDataCell(data.EndedAt,   CellDataType.Time)
+                          });
+
+            _sheets.Append(sheet, row);
         }
 
         public Task SaveAsync(IData data)
