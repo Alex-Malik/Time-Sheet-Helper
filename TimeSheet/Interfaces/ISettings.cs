@@ -14,15 +14,28 @@ namespace TimeSheet.Interfaces
     public interface IInsertSettings : ISettings
     {
         // View specific values.
-        Int32   StepInHours    { get; }
-        Int32   StepInMinutes  { get; }
-        Boolean AllowDataMerge { get; }
+        Int32   StepInHours    { get; set; }
+        Int32   StepInMinutes  { get; set; }
+        Boolean AllowDataMerge { get; set; }
 
         // Data specific values.
-        IEnumerable<String> Projects { get; }
+        IEnumerable<String> Projects { get; set; }
     }
 
-    public interface ISettingsService<TSettings> where TSettings : ISettings
+    public interface ISheetsSettings : ISettings
+    {
+        // TODO: Consider how to architect it in generic way.
+
+        String SpreadSheetID { get; set; }
+        String SheetName     { get; set; }
+    }
+
+    public interface IApplicationSettings : ISettings
+    {
+        String SettingsFilePath { get; set; }
+    }
+
+    public interface ISettingsService<TSettings> : IService where TSettings : ISettings
     {
         void Save(TSettings settings);
         Task SaveAsync(TSettings settings);

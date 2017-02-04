@@ -69,12 +69,22 @@ namespace TimeSheet.Views.Pages
 
     public class InsertViewModel : INotifyPropertyChanged
     {
+        private readonly NavigationManager _navigator;
+        private readonly IInsertService    _service;
+        private readonly IInsertSettings   _settings;
         private readonly Timer _timer;
 
         public InsertViewModel(NavigationManager navigator, IInsertService service)
         {
-            Navigator = navigator;
-            Service   = service;
+            if (navigator == null)
+                throw new ArgumentNullException(nameof(navigator));
+            if (service == null)
+                throw new ArgumentNullException(nameof(service));
+
+            _navigator = navigator;
+            _service   = service;
+
+            _settings  = _service.LoadSettings();
 
             DateTime     now = DateTime.Now;
             Project          = String.Empty;
@@ -92,11 +102,7 @@ namespace TimeSheet.Views.Pages
 
         // Events
         public event PropertyChangedEventHandler PropertyChanged;
-
-        // IoC Properties
-        public IInsertService    Service    { get; }
-        public NavigationManager Navigator  { get; }
-
+        
         // Commands
         public ICommand SaveCommand          => CommandFactory.CreateFor(Save);
         public ICommand GoToTimetableCommand => CommandFactory.CreateFor(GoToTimetable);
@@ -130,18 +136,18 @@ namespace TimeSheet.Views.Pages
 
         private void Save()
         {
-            Service.Save(new InsertViewModelDataAdapter(this));
+            _service.Save(new InsertViewModelDataAdapter(this));
         }
         
         private void GoToTimetable()
         {
             // TODO: Rename Dashboard to TimeTable.
-            Navigator.GoTo<Dashboard>();
+            _navigator.GoTo<Dashboard>();
         }
 
         private void GoToSettings()
         {
-            Navigator.GoTo<Settings>();
+            _navigator.GoTo<Settings>();
         }
 
         private void OnTimerCallback(object state)
