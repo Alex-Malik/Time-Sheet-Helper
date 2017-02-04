@@ -116,10 +116,10 @@ namespace TimeSheet
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).PropertiesAutowired();
+
             builder.RegisterModule<SharedModule>();
             builder.RegisterModule<ServicesModule>();
-
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).PropertiesAutowired();
 
             return builder.Build();
         }

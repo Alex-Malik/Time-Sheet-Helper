@@ -8,6 +8,9 @@ namespace TimeSheet.Services.Interfaces
 {
     public interface ISheet
     {
+        String SpreadSheetID { get; }
+
+        String ID    { get; }
         String Name  { get; }
         Int32  Index { get; }
     }
@@ -39,11 +42,12 @@ namespace TimeSheet.Services.Interfaces
 
     public interface ICell
     {
-        Object Value { get; }
+        Object      Value  { get; }
+        ICellFormat Format { get; }
     }
 
-    public interface ICell<T> : ICell
+    public interface ICellFormat
     {
-        new T Value { get; }
+
     }
 }

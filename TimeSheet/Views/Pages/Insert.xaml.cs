@@ -26,10 +26,10 @@ namespace TimeSheet.Views.Pages
     /// </summary>
     public partial class Insert : Page
     {
-        public Insert(GoogleService sheets)
+        public Insert(InsertViewModel model)
         {
             InitializeComponent();
-            DataContext = new InsertViewModel(sheets);
+            DataContext = model;
 
             // Setup initial bindings.
             xStartedAtIncrement.Command = (DataContext as InsertViewModel)?.IncrementStartedAtMinutesCommand;
@@ -67,15 +67,17 @@ namespace TimeSheet.Views.Pages
         }
     }
 
-    class InsertViewModel : INotifyPropertyChanged
+    public class InsertViewModel : INotifyPropertyChanged
     {
+        // TODO: Move this constants to the settings.
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
         private const string DefaultSheedName     = "Alex Malik";
         private readonly Timer _timer;
 
-        public InsertViewModel(GoogleService sheets)
+        public InsertViewModel(NavigationManager navigator, IInsertService service)
         {
-            Sheets = sheets;
+            Navigator = navigator;
+            Service   = service;
 
             DateTime     now = DateTime.Now;
             Project          = String.Empty;
@@ -95,7 +97,7 @@ namespace TimeSheet.Views.Pages
         public event PropertyChangedEventHandler PropertyChanged;
 
         // IoC Properties
-        public GoogleService     Sheets     { get; }
+        public IInsertService    Service    { get; }
         public NavigationManager Navigator  { get; }
 
         // Commands
@@ -135,7 +137,9 @@ namespace TimeSheet.Views.Pages
             DateTime startedAt = DateTime.Now.Date.AddHours(StartedAtHours).AddMinutes(StartedAtMinutes);
             DateTime endedAt   = DateTime.Now.Date.AddHours(EndedAtHours).AddMinutes(EndedAtMinutes);
 
-            Sheets.Insert(DefaultSpreadSheetId, DefaultSheedName, CreatedAt, Message, Project, hours, startedAt, endedAt);
+            // TODO: Create IData adapter.
+
+            //Service.Save(null);
         }
         
         private void GoToTimetable()

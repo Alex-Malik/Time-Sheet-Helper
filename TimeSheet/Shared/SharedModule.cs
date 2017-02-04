@@ -12,6 +12,8 @@ namespace TimeSheet.Shared
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
+
+            builder.RegisterInstance(NavigationManager.Instance);
         }
     }
 }

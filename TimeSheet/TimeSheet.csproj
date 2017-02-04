@@ -98,19 +98,13 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandsFactory.cs" />
     <Compile Include="Controls\FrameAdapter.cs" />
-    <Compile Include="Services\Builders\GoogleCellBuilder.cs" />
-    <Compile Include="Services\Converters\GoogleConverter.cs" />
-    <Compile Include="Services\Interfaces\ICellBuilder.cs" />
+    <Compile Include="Services\InsertService.cs" />
     <Compile Include="Services\Interfaces\IData.cs" />
     <Compile Include="Services\Interfaces\ISheet.cs" />
-    <Compile Include="Services\Interfaces\ISheetConverter.cs" />
-    <Compile Include="Services\Models\GoogleCell.cs" />
-    <Compile Include="Services\Models\GoogleCol.cs" />
-    <Compile Include="Services\Models\GoogleRow.cs" />
-    <Compile Include="Services\Models\GoogleSheetData.cs" />
-    <Compile Include="Services\Models\GoogleSheetInfo.cs" />
+    <Compile Include="Services\Interfaces\ISheetsService.cs" />
     <Compile Include="Services\Models\Data.cs" />
     <Compile Include="Services\ServicesModule.cs" />
+    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Shared\NavigationManager.cs" />
     <Compile Include="Shared\SharedModule.cs" />
     <Compile Include="Views\Pages\Dashboard.xaml.cs">
@@ -133,7 +127,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Services\GoogleService.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -186,7 +179,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Services\Models\Google\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -15,7 +15,7 @@ namespace TimeSheet.Views.Pages
     /// </summary>
     public partial class Dashboard : Page
     {
-        public Dashboard(GoogleService sheets)
+        public Dashboard(ISheetsService sheets)
         {
             InitializeComponent();
             DataContext = new DashboardViewModel(sheets);
@@ -27,7 +27,7 @@ namespace TimeSheet.Views.Pages
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
         private const string DefaultSheetName     = "Alex Malik";
 
-        public DashboardViewModel(GoogleService sheets)
+        public DashboardViewModel(ISheetsService sheets)
         {
             Sheets = sheets;
 
@@ -39,7 +39,7 @@ namespace TimeSheet.Views.Pages
         public event PropertyChangedEventHandler PropertyChanged;
 
         // IoC Properties
-        public GoogleService Sheets { get; }
+        public ISheetsService Sheets { get; }
 
         // Commands
         public ICommand RefreshCommand  => CommandFactory.CreateFor(Refresh);
@@ -54,7 +54,7 @@ namespace TimeSheet.Views.Pages
 
         private void Refresh()
         {
-            Records = Sheets.GetData(SpreadSheetId, SheetName);
+            //Records = Sheets.GetData(SpreadSheetId, SheetName);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Records)));
         }
 
