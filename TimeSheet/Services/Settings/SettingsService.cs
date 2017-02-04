@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TimeSheet.Services.Settings
@@ -14,7 +11,7 @@ namespace TimeSheet.Services.Settings
     // TODO: Implementation of ISettingsService should implement explicetly
     // different instances of the ISettingsService<T>.
 
-    public class SettingsService : 
+    internal class SettingsService : 
         ISettingsService<IApplicationSettings>,
         ISettingsService<IInsertSettings>,
         ISettingsService<ISheetsSettings>

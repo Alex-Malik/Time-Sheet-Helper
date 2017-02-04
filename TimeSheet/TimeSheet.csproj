@@ -98,8 +98,13 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandsFactory.cs" />
     <Compile Include="Controls\FrameAdapter.cs" />
+    <Compile Include="Interfaces\IApplicationSettings.cs" />
+    <Compile Include="Interfaces\IInsertService.cs" />
+    <Compile Include="Interfaces\IInsertSettings.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
+    <Compile Include="Interfaces\ISettingsService.cs" />
+    <Compile Include="Interfaces\ISheetsSettings.cs" />
     <Compile Include="Services\Google\GoogleService.cs" />
     <Compile Include="Services\Google\Imps\GoogleSheetAdapter.cs" />
     <Compile Include="Services\Insert\Imps\InsertDataCell.cs" />

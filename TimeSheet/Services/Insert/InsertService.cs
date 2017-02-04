@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TimeSheet.Services.Insert
@@ -9,7 +6,7 @@ namespace TimeSheet.Services.Insert
     using Imps;
     using Interfaces;
 
-    public class InsertService : IInsertService
+    internal class InsertService : IInsertService
     {
         // TODO: Move this constants to the settings.
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";

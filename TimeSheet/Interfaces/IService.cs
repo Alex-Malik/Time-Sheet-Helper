@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace TimeSheet.Interfaces
 {
@@ -17,12 +13,5 @@ namespace TimeSheet.Interfaces
         Task<TSettings> LoadSettingsAsync();
         void SaveSettings(TSettings settings);
         Task SaveSettingsAsync(TSettings settings);
-    }
-
-
-    public interface IInsertService : IService<IInsertSettings>
-    {
-        void Save(IData data);
-        Task SaveAsync(IData data);
     }
 }
