@@ -6,31 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimeSheet.Services
 {
-    // TODO: Move all interfaces to corresponding folders.
-
-    public interface ISettings
-    {
-
-    }
-
-    public interface IInsertSettings : ISettings
-    {
-        // View specific values.
-        Int32   StepInHours    { get; }
-        Int32   StepInMinutes  { get; }
-        Boolean AllowDataMerge { get; }
-
-        // Data specific values.
-        IEnumerable<String> Projects { get; }
-    }
-
-    public interface ISettingsService<TSettings> where TSettings : ISettings
-    {
-        void            Save(TSettings settings);
-        Task            SaveAsync(TSettings settings);
-        TSettings       Load();
-        Task<TSettings> LoadAsync();
-    }
+    using Interfaces;
 
     // TODO: Implementation of ISettingsService should implement explicetly
     // different instances of the ISettingsService<T>.

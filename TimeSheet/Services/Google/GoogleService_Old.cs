@@ -18,7 +18,7 @@ namespace TimeSheet.Services
     using Interfaces;
     using Models;
 
-    public class GoogleService
+    public class GoogleService_Old
     {
         #region Private Fields
 
@@ -35,7 +35,7 @@ namespace TimeSheet.Services
 
         #region Init
 
-        public GoogleService()
+        public GoogleService_Old()
         {
             UserCredential credential;
 

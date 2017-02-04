@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeSheet.Services.Interfaces
+namespace TimeSheet.Interfaces
 {
     public interface ISheetsService
     {

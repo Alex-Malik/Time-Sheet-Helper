@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace TimeSheet.Services
 {
+    using Interfaces;
+
     public class ServicesModule : Module
     {
         protected override void Load(ContainerBuilder builder)

@@ -6,8 +6,7 @@ using System.Windows.Input;
 namespace TimeSheet.Views.Pages
 {
     using Commands;
-    using Services;
-    using Services.Interfaces;
+    using Interfaces;
     using Shared;
 
     /// <summary>
@@ -24,6 +23,7 @@ namespace TimeSheet.Views.Pages
 
     class DashboardViewModel : INotifyPropertyChanged
     {
+        // TODO: Move to settings service implementation.
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
         private const string DefaultSheetName     = "Alex Malik";
 

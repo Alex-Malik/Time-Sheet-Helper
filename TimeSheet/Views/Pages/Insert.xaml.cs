@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace TimeSheet.Views.Pages
 {
     using Commands;
-    using Services;
+    using Interfaces;
     using Shared;
 
     /// <summary>
@@ -69,9 +69,6 @@ namespace TimeSheet.Views.Pages
 
     public class InsertViewModel : INotifyPropertyChanged
     {
-        // TODO: Move this constants to the settings.
-        private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
-        private const string DefaultSheedName     = "Alex Malik";
         private readonly Timer _timer;
 
         public InsertViewModel(NavigationManager navigator, IInsertService service)
@@ -133,13 +130,7 @@ namespace TimeSheet.Views.Pages
 
         private void Save()
         {
-            Double hours = (EndedAtHours + (EndedAtMinutes / 60.0)) - (StartedAtHours + (StartedAtMinutes / 60.0));
-            DateTime startedAt = DateTime.Now.Date.AddHours(StartedAtHours).AddMinutes(StartedAtMinutes);
-            DateTime endedAt   = DateTime.Now.Date.AddHours(EndedAtHours).AddMinutes(EndedAtMinutes);
-
-            // TODO: Create IData adapter.
-
-            //Service.Save(null);
+            Service.Save(new InsertViewModelDataAdapter(this));
         }
         
         private void GoToTimetable()
@@ -241,5 +232,28 @@ namespace TimeSheet.Views.Pages
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(EndedAtMinutes)));
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FormattedEndedAtMinutes)));
         }
+    }
+
+    public class InsertViewModelDataAdapter : IData
+    {
+        public InsertViewModelDataAdapter(InsertViewModel viewModel)
+        {
+            CreatedAt = viewModel.CreatedAt;
+            Content   = viewModel.Message;
+            Project   = viewModel.Project;
+            Hours     = (viewModel.EndedAtHours + (viewModel.EndedAtMinutes / 60.0)) - (viewModel.StartedAtHours + (viewModel.StartedAtMinutes / 60.0));
+            StartedAt = DateTime.Now.Date.AddHours(viewModel.StartedAtHours).AddMinutes(viewModel.StartedAtMinutes);
+            EndedAt   = DateTime.Now.Date.AddHours(viewModel.EndedAtHours).AddMinutes(viewModel.EndedAtMinutes);
+        }
+
+        public DateTime CreatedAt { get; set; }
+        public String   Content   { get; set; }
+        public String   Project   { get; set; }
+        public Double   Hours     { get; set; }
+        public DateTime StartedAt { get; set; }
+        public DateTime EndedAt   { get; set; }
+
+        public String FormatedCreatedAt { get; }
+        public String FormatedHours     { get; }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeSheet.Services.Interfaces
+namespace TimeSheet.Interfaces
 {
     public interface ISheet
     {
@@ -17,8 +17,8 @@ namespace TimeSheet.Services.Interfaces
 
     public interface ISheetInfo : ISheet
     {
-        Int32  Rows { get; }
-        Int32  Cols { get; }
+        Int32  RowsNumber { get; }
+        Int32  ColsNumber { get; }
         String AvaliableRows  { get; }
         String AvaliableCols  { get; }
         String AvaliableRange { get; }

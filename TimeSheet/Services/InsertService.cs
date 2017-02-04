@@ -3,34 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TimeSheet.Services.Interfaces;
+using TimeSheet.Interfaces;
 
 namespace TimeSheet.Services
 {
-    // TODO: Move all interfaces to corresponding folders.
-    
-    public interface IService
-    {
-
-    }
-
-    public interface IService<TSettings> where TSettings : ISettings
-    {
-        TSettings LoadSettings();
-        Task<TSettings> LoadSettingsAsync();
-        void SaveSettings(TSettings settings);
-        Task SaveSettingsAsync(TSettings settings);
-    }
-
-
-    public interface IInsertService : IService<IInsertSettings>
-    {
-        void Save(IData data);
-        Task SaveAsync(IData data);
-    }
+    using Interfaces;
 
     public class InsertService : IInsertService
     {
+        // TODO: Move this constants to the settings.
+        private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
+        private const string DefaultSheetName     = "Alex Malik";
         private readonly ISheetsService _sheets;
         private readonly ISettingsService<IInsertSettings> _settings;
 
@@ -42,15 +25,12 @@ namespace TimeSheet.Services
 
         public void Save(IData data)
         {
-            // TODO: View should implement ViewDataAdapter : IData which will be put here.
             // TODO: Here IData should be transformed to the IRow and sent to the ISheetsService.
-
             throw new NotImplementedException();
         }
 
         public Task SaveAsync(IData data)
         {
-            // TODO: View should implement ViewDataAdapter : IData which will be put here.
             // TODO: IData should be transformed to the IRow and sent to the ISheetsService asynchronously.
             throw new NotImplementedException();
         }
