@@ -1,13 +1,12 @@
 ﻿using Autofac;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TimeSheet.Services
 {
     using Interfaces;
+
+    using Google;
+    using Insert;
+    using Settings;
 
     public class ServicesModule : Module
     {
@@ -15,21 +14,12 @@ namespace TimeSheet.Services
         {
             base.Load(builder);
 
-            //builder
-            //    .RegisterType<GoogleService>()
-            //    .As<GoogleService>()  // TODO: Change on ISheetsService
-            //    .InstancePerMatchingLifetimeScope(App.PageScope);
-            //builder
-            //    .RegisterType<SettingsService>()
-            //    .AsSelf()
-            //    .InstancePerMatchingLifetimeScope(App.PageScope);
-
             builder.RegisterType<SettingsService>().AsImplementedInterfaces()
                 .InstancePerMatchingLifetimeScope(App.AppScope);
 
-            builder.RegisterType<Insert.InsertService>().As<IInsertService>()
+            builder.RegisterType<InsertService>().As<IInsertService>()
                 .InstancePerMatchingLifetimeScope(App.PageScope);
-            builder.RegisterType<Google.GoogleService>().As<ISheetsService>()
+            builder.RegisterType<GoogleService>().As<ISheetsService>()
                 .InstancePerMatchingLifetimeScope(App.PageScope);
         }
     }

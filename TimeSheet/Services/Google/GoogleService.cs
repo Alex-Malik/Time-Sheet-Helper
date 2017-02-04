@@ -47,6 +47,7 @@ namespace TimeSheet.Services.Google
         }
         #endregion Initialize
 
+        #region ISheetsService Support
         public ISheet GetSheet(String spreadSheetId, String sheetName)
         {
             if (String.IsNullOrEmpty(spreadSheetId))
@@ -79,7 +80,7 @@ namespace TimeSheet.Services.Google
             throw new NotImplementedException();
         }
 
-        public ISheetInfo GetSheetInfo(String spreadSheetId, Int32  sheetIndex)
+        public ISheetInfo GetSheetInfo(String spreadSheetId, Int32 sheetIndex)
         {
             throw new NotImplementedException();
         }
@@ -95,7 +96,7 @@ namespace TimeSheet.Services.Google
             throw new NotImplementedException();
         }
 
-        public ISheetData GetSheetData(String spreadSheetId, Int32  sheetIndex)
+        public ISheetData GetSheetData(String spreadSheetId, Int32 sheetIndex)
         {
             throw new NotImplementedException();
         }
@@ -104,6 +105,79 @@ namespace TimeSheet.Services.Google
         public IEnumerable<ISheetInfo> GetSheets(String spreadSheetId)
         {
             throw new NotImplementedException();
+
+            //// TODO: Optimize records loading.
+            ////        + Remove full loading of the spreadsheet.
+            ////        + Remove full loading of the sheet.
+            ////        - Optimize cells converting (from CellData to a model).
+
+            //// Load sheet info.
+            //ISheetInfo info = GetSheetInfo(spreadSheetId, sheetName);
+
+            //// Load sheet data.
+            //ISheetData data = GetSheetData(spreadSheetId, info);
+
+            //// Option I
+            ////// Convert loaded sheet with data to a list of IData instances.
+            ////return _converter.Convert(data);
+
+            //// TODO: Find best solution between this two options.
+
+            //// Option II
+            //return data.Rows
+            //    .Select(x => x as GoogleRow)
+            //    .Select(x => x.Source)
+            //    .Select(x => new Data
+            //    {
+            //        CreatedAt = GetDate(GetValue(x, 0)),
+            //        Content   = GetString(GetValue(x, 1)),
+            //        Hours     = GetDouble(GetValue(x, 2)),
+            //        Project   = GetString(GetValue(x, 3)),
+            //        StartedAt = GetDate(GetValue(x, 4)),
+            //        EndedAt   = GetDate(GetValue(x, 5))
+            //    })
+            //    .Where(r => r.CreatedAt.HasValue
+            //         && !String.IsNullOrEmpty(r.Content)
+            //         && !String.IsNullOrEmpty(r.Project)
+            //         && r.Hours.HasValue)
+            //    .OrderByDescending(r => r.CreatedAt.Value);
+
+            // OLD CODE:
+            //SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadSheetId);
+            //request.IncludeGridData = true;
+            //request.Ranges = sheetName;
+
+            //Spreadsheet spreadsheet = request.Execute();
+            //if (spreadsheet == null)
+            //    return Enumerable.Empty<Data>();
+            //if (spreadsheet.Sheets == null)
+            //    return Enumerable.Empty<Data>();
+            //if (spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName)?.Data == null)
+            //    return Enumerable.Empty<Data>();
+
+            //GridData griddata = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName).Data[0];
+            //List<Data> records = new List<Data>();
+            //foreach (var row in griddata.RowData.Skip(1)) // TODO: Move skip count to settings.
+            //{
+            //    // TODO: Implement cells merge.
+
+            //    records.Add(new Data
+            //    {
+            //        CreatedAt = GetDate(GetValue(row, 0)),
+            //        Content = GetString(GetValue(row, 1)),
+            //        Hours = GetDouble(GetValue(row, 2)),
+            //        Project = GetString(GetValue(row, 3)),
+            //        StartedAt = GetDate(GetValue(row, 4)),
+            //        EndedAt = GetDate(GetValue(row, 5))
+            //    });
+            //}
+
+            //return records
+            //    .Where(r => r.CreatedAt.HasValue
+            //         && !String.IsNullOrEmpty(r.Content)
+            //         && !String.IsNullOrEmpty(r.Project)
+            //         && r.Hours.HasValue)
+            //    .OrderByDescending(r => r.CreatedAt.Value);
         }
 
 
@@ -155,8 +229,9 @@ namespace TimeSheet.Services.Google
         {
             throw new NotImplementedException();
         }
+        #endregion ISheetsService Support
 
-
+        #region Private Methods
         private void Initialize(bool forced = false)
         {
             // Return back if service already initialized.
@@ -169,7 +244,7 @@ namespace TimeSheet.Services.Google
             {
                 string credPath = Environment.GetFolderPath(
                     Environment.SpecialFolder.Personal);
-                credPath = Path.Combine(credPath, 
+                credPath = Path.Combine(credPath,
                     ".credentials/sheets.googleapis.timesheet.json");
 
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -190,11 +265,11 @@ namespace TimeSheet.Services.Google
         }
 
         private Spreadsheet LoadSpreadSheet
-            (String  spreadSheetId, 
-             String  range = null, 
+            (String spreadSheetId,
+             String range = null,
              Boolean includeData = false)
         {
-            SpreadsheetsResource.GetRequest request = 
+            SpreadsheetsResource.GetRequest request =
                 _service.Spreadsheets.Get(spreadSheetId);
             request.Ranges = range;
             request.IncludeGridData = includeData;
@@ -239,16 +314,16 @@ namespace TimeSheet.Services.Google
                 },
                 UserEnteredFormat = new CellFormat
                 {
-                    
+
                 }
             };
         }
 
-        private CellData ConvertToInt16(ICell cell)  => ConvertToInt32(cell);
+        private CellData ConvertToInt16(ICell cell) => ConvertToInt32(cell);
 
-        private CellData ConvertToInt32(ICell cell)  => ConvertToInt64(cell);
+        private CellData ConvertToInt32(ICell cell) => ConvertToInt64(cell);
 
-        private CellData ConvertToInt64(ICell cell)  => ConvertToSingle(cell);
+        private CellData ConvertToInt64(ICell cell) => ConvertToSingle(cell);
 
         private CellData ConvertToSingle(ICell cell) => ConvertToDouble(cell);
 
@@ -323,5 +398,6 @@ namespace TimeSheet.Services.Google
                 }
             };
         }
+        #endregion
     }
 }

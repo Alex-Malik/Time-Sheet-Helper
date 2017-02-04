@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeSheet.Services
+namespace TimeSheet.Services.Settings
 {
+    //using Imps;
     using Interfaces;
 
     // TODO: Implementation of ISettingsService should implement explicetly
