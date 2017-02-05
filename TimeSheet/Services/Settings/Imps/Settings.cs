@@ -5,7 +5,7 @@ namespace TimeSheet.Services.Settings.Imps
 {
     using Interfaces;
 
-    internal class Settings : IInsertSettings, ISheetsSettings
+    internal class Settings : IInsertSettings, ISheetSettings
     {
         #region IInsertSettings
         // View specific values.
@@ -18,8 +18,8 @@ namespace TimeSheet.Services.Settings.Imps
         #endregion IInsertSettings
 
         #region ISheetsSettings
-        String ISheetsSettings.SpreadSheetID { get; set; } = String.Empty;
-        String ISheetsSettings.SheetName     { get; set; } = String.Empty;
+        String ISheetSettings.SpreadSheetID { get; set; } = String.Empty;
+        String ISheetSettings.SheetName     { get; set; } = String.Empty;
         #endregion ISheetsSettings
     }
 }

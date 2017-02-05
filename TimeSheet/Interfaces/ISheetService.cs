@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TimeSheet.Interfaces
 {
-    public interface ISheetsService
+    public interface ISheetService
     {
         ISheet     GetSheet(String spreadSheetId, String sheetName);
         ISheet     GetSheet(String spreadSheetId, Int32  sheetIndex);

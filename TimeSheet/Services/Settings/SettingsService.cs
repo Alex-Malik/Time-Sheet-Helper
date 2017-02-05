@@ -11,171 +11,242 @@ namespace TimeSheet.Services.Settings
     // TODO: Implementation of ISettingsService should implement explicetly
     // different instances of the ISettingsService<T>.
 
-    internal class SettingsService : 
-        ISettingsService<IApplicationSettings>,
-        ISettingsService<IInsertSettings>,
-        ISettingsService<ISheetsSettings>
+    internal class SettingsService : ISettingsService
     {
         public SettingsService()
         {
         }
 
-        #region IApplicationSettings Support
-        IApplicationSettings ISettingsService<IApplicationSettings>.Load() => LoadAppSettings();
-        Task<IApplicationSettings> ISettingsService<IApplicationSettings>.LoadAsync()
+        #region ISettingsService Support
+        public void Save<T>(T settings) where T : class, ISettings
         {
             throw new NotImplementedException();
         }
-        void ISettingsService<IApplicationSettings>.Save(IApplicationSettings settings) => SaveAppSettings(settings as ApplicationSettings);
-        Task ISettingsService<IApplicationSettings>.SaveAsync(IApplicationSettings settings)
+
+        public Task SaveAsync<T>(T settings) where T : class, ISettings
         {
             throw new NotImplementedException();
         }
-        #endregion IApplicationSettings Support
 
-        #region IInsertSettings Support
-        IInsertSettings ISettingsService<IInsertSettings>.Load() => Load();
-        async Task<IInsertSettings> ISettingsService<IInsertSettings>.LoadAsync() => await LoadAsync();
-        void ISettingsService<IInsertSettings>.Save(IInsertSettings settings) => Save(settings as Settings);
-        async Task ISettingsService<IInsertSettings>.SaveAsync(IInsertSettings settings) => await SaveAsync(settings as Settings);
-        #endregion IInsertSettings Support
+        public T Load<T>() where T : class, ISettings
+        {
+            // Load application settings.
+            AppSettings appset = LoadAppSettings();
 
-        #region ISheetsSettings Support
-        ISheetsSettings ISettingsService<ISheetsSettings>.Load() => Load();
-        async Task<ISheetsSettings> ISettingsService<ISheetsSettings>.LoadAsync() => await LoadAsync();
-        void ISettingsService<ISheetsSettings>.Save(ISheetsSettings settings) => Save(settings as Settings);
-        async Task ISettingsService<ISheetsSettings>.SaveAsync(ISheetsSettings settings) => await SaveAsync(settings as Settings);
-        #endregion ISheetsSettings Support
+            // Load or create settings file.
+            Settings settings  = LoadSettings(appset.SettingsFilePath);
+
+            // Check if settings type supported or throw an exception.
+            if (settings is T) return settings as T;
+            else
+                throw new NotSupportedException(typeof(T).ToString());
+        }
+
+        public async Task<T> LoadAsync<T>() where T : class, ISettings
+        {
+            // Load application settings.
+            AppSettings appset = await LoadAppSettingsAsync();
+
+            // Load or create settings file.
+            Settings settings  = await LoadSettingsAsync(appset.SettingsFilePath);
+
+            // Check if settings type supported or throw an exception.
+            if (settings is T) return settings as T;
+            else
+                throw new NotSupportedException(typeof(T).ToString());
+        }
+        #endregion
 
         #region Private Methods
-        private Settings Save(Settings settings = null)
+        private T LoadOrCreate<T>(String filePath) where T : class
         {
-            if (settings == null)
-                settings = new Settings();
+            // Create directory if it not exists.
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-            // Load application settings.
-            ApplicationSettings app = LoadAppSettings();
-            using (var stream = new FileStream(app.SettingsFilePath, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(stream))
-            {
-                String json = JsonConvert.SerializeObject(settings);
-                writer.WriteLine(json);
-            }
-
-            return settings;
-        }
-
-        private async Task<Settings> SaveAsync(Settings settings = null)
-        {
-            if (settings == null)
-                settings = new Settings();
-
-            // Load application settings.
-            ApplicationSettings app = LoadAppSettings();
-            using (var stream = new FileStream(app.SettingsFilePath, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(stream))
-            {
-                String json = await Task.Factory
-                    .StartNew(() => JsonConvert.SerializeObject(settings));
-                await writer.WriteLineAsync(json);
-            }
-
-            return settings;
-        }
-
-        private Settings Load()
-        {
-            // Load application settings.
-            ApplicationSettings app = LoadAppSettings();
-
-            // Create directory in case when it's not exists.
-            Directory.CreateDirectory(Path.GetDirectoryName(app.SettingsFilePath));
-
-            String json = String.Empty;
-            Settings settings = null;
+            T result = null;
 
             // Read json data from file and convert it to the settings instance.
-            using (var stream = new FileStream(app.SettingsFilePath, FileMode.OpenOrCreate, FileAccess.Read))
+            using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
-                json = reader.ReadToEnd();
-                settings = JsonConvert.DeserializeObject<Settings>(json);
+                String json = reader.ReadToEnd();
+                result = JsonConvert.DeserializeObject<T>(json);
             }
 
-            if (settings == null)
-                return Save();
-            else
-                return settings;
+            return result;
         }
 
-        private async Task<Settings> LoadAsync()
+        private async Task<T> LoadOrCreateAsync<T>(String filePath) where T : class
         {
-            // Load application settings.
-            ApplicationSettings app = LoadAppSettings();
+            // Create directory if it not exists.
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-            // Create directory in case when it's not exists.
-            Directory.CreateDirectory(Path.GetDirectoryName(app.SettingsFilePath));
-
-            String json = String.Empty;
-            Settings settings = null;
+            T result = null;
 
             // Read json data from file and convert it to the settings instance.
-            using (var stream = new FileStream(app.SettingsFilePath, FileMode.OpenOrCreate, FileAccess.Read))
+            using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
-                json = await reader.ReadToEndAsync();
-                settings = await Task.Factory
-                    .StartNew(() => JsonConvert.DeserializeObject<Settings>(json));
+                String json = await reader.ReadToEndAsync();
+                result = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<T>(json));
             }
 
-            if (settings == null)
-                return await SaveAsync();
-            else
-                return settings;
+            return result ?? default(T);
         }
 
-        private void SaveAppSettings(ApplicationSettings settings = null)
+        private Settings LoadSettings(String filePath)
         {
+            return LoadOrCreate<Settings>(filePath) ?? new Settings();
+        }
+
+        private Task<Settings> LoadSettingsAsync(String filePath)
+        {
+            return LoadOrCreateAsync<Settings>(filePath) ?? Task.FromResult(new Settings());
+        }
+
+        private AppSettings LoadAppSettings()
+        {
+            AppSettings settings = LoadOrCreate<AppSettings>($"{Environment.CurrentDirectory}\\app.json");
             if (settings == null)
             {
                 String defSettingsFilePath = String.Empty;
                 defSettingsFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
                 defSettingsFilePath = Path.Combine(defSettingsFilePath, "Time Sheet Helper/timesheet.json");
-                settings = new ApplicationSettings
-                {
-                    SettingsFilePath = defSettingsFilePath
-                };
-            }
 
-            // Build path to application settings file.
-            String path = $"{Environment.CurrentDirectory}\\app.json";
-
-            // Read json data from file and convert it to the settings instance.
-            using (var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
-            using (var writer = new StreamWriter(stream))
-            {
-                String json = JsonConvert.SerializeObject(settings);
-                writer.WriteLine(json);
+                settings = new AppSettings(defSettingsFilePath);
             }
+            return settings;
         }
 
-        private ApplicationSettings LoadAppSettings()
+        private async Task<AppSettings> LoadAppSettingsAsync()
         {
-            // Build path to application settings file.
-            String path = $"{Environment.CurrentDirectory}\\app.json";
-
-            if (!File.Exists(path)) SaveAppSettings();
-
-            // Read json data from file and convert it to the settings instance.
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream))
+            AppSettings settings = await LoadOrCreateAsync<AppSettings>($"{Environment.CurrentDirectory}\\app.json");
+            if (settings == null)
             {
-                String json = reader.ReadToEnd();
-                ApplicationSettings settings =
-                    JsonConvert.DeserializeObject<ApplicationSettings>(json);
+                String defSettingsFilePath = String.Empty;
+                defSettingsFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                defSettingsFilePath = Path.Combine(defSettingsFilePath, "Time Sheet Helper/timesheet.json");
 
-                return settings;
+                settings = new AppSettings(defSettingsFilePath);
             }
+            return settings;
+        }
+
+
+        private Settings Save(Settings settings = null)
+        {
+            //if (settings == null)
+            //    settings = new Settings();
+
+            //// Load application settings.
+            //AppSettings app = LoadAppSettings();
+            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.Create, FileAccess.Write))
+            //using (var writer = new StreamWriter(stream))
+            //{
+            //    String json = JsonConvert.SerializeObject(settings);
+            //    writer.WriteLine(json);
+            //}
+
+            //return settings;
+            throw new NotImplementedException();
+        }
+
+        private async Task<Settings> SaveAsync(Settings settings = null)
+        {
+            //if (settings == null)
+            //    settings = new Settings();
+
+            //// Load application settings.
+            //AppSettings app = LoadAppSettings();
+            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.Create, FileAccess.Write))
+            //using (var writer = new StreamWriter(stream))
+            //{
+            //    String json = await Task.Factory
+            //        .StartNew(() => JsonConvert.SerializeObject(settings));
+            //    await writer.WriteLineAsync(json);
+            //}
+
+            //return settings;
+            throw new NotImplementedException();
+        }
+
+        private Settings Load()
+        {
+            //// Load application settings.
+            //AppSettings app = LoadAppSettings();
+
+            //// Create directory in case when it's not exists.
+            //Directory.CreateDirectory(Path.GetDirectoryName(app.SettingsFilePath));
+
+            //String json = String.Empty;
+            //Settings settings = null;
+
+            //// Read json data from file and convert it to the settings instance.
+            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.OpenOrCreate, FileAccess.Read))
+            //using (var reader = new StreamReader(stream))
+            //{
+            //    json = reader.ReadToEnd();
+            //    settings = JsonConvert.DeserializeObject<Settings>(json);
+            //}
+
+            //if (settings == null)
+            //    return Save();
+            //else
+            //    return settings;
+            throw new NotImplementedException();
+        }
+
+        private async Task<Settings> LoadAsync()
+        {
+            //// Load application settings.
+            //AppSettings app = LoadAppSettings();
+
+            //// Create directory in case when it's not exists.
+            //Directory.CreateDirectory(Path.GetDirectoryName(app.SettingsFilePath));
+
+            //String json = String.Empty;
+            //Settings settings = null;
+
+            //// Read json data from file and convert it to the settings instance.
+            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.OpenOrCreate, FileAccess.Read))
+            //using (var reader = new StreamReader(stream))
+            //{
+            //    json = await reader.ReadToEndAsync();
+            //    settings = await Task.Factory
+            //        .StartNew(() => JsonConvert.DeserializeObject<Settings>(json));
+            //}
+
+            //if (settings == null)
+            //    return await SaveAsync();
+            //else
+            //    return settings;
+            throw new NotImplementedException();
+        }
+
+        private void SaveAppSettings(AppSettings settings = null)
+        {
+            //if (settings == null)
+            //{
+            //    String defSettingsFilePath = String.Empty;
+            //    defSettingsFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            //    defSettingsFilePath = Path.Combine(defSettingsFilePath, "Time Sheet Helper/timesheet.json");
+            //    settings = new AppSettings
+            //    {
+            //        SettingsFilePath = defSettingsFilePath
+            //    };
+            //}
+
+            //// Build path to application settings file.
+            //String path = $"{Environment.CurrentDirectory}\\app.json";
+
+            //// Read json data from file and convert it to the settings instance.
+            //using (var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
+            //using (var writer = new StreamWriter(stream))
+            //{
+            //    String json = JsonConvert.SerializeObject(settings);
+            //    writer.WriteLine(json);
+            //}
+            throw new NotImplementedException();
         }
         #endregion
     }

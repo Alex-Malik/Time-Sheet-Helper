@@ -2,7 +2,7 @@
 
 namespace TimeSheet.Interfaces
 {
-    public interface ISheetsSettings : ISettings
+    public interface ISheetSettings : ISettings
     {
         // TODO: Consider how to architect it in generic way.
 

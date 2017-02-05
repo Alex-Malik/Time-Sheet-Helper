@@ -7,11 +7,12 @@ namespace TimeSheet.Interfaces
 
     }
 
-    public interface IService<TSettings> where TSettings : ISettings
+    public interface IService<T> where T : ISettings
     {
-        TSettings LoadSettings();
-        Task<TSettings> LoadSettingsAsync();
-        void SaveSettings(TSettings settings);
-        Task SaveSettingsAsync(TSettings settings);
+        T       LoadSettings();
+        Task<T> LoadSettingsAsync();
+
+        void SaveSettings(T settings);
+        Task SaveSettingsAsync(T settings);
     }
 }

@@ -104,7 +104,7 @@
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
     <Compile Include="Interfaces\ISettingsService.cs" />
-    <Compile Include="Interfaces\ISheetsSettings.cs" />
+    <Compile Include="Interfaces\ISheetSettings.cs" />
     <Compile Include="Services\Google\GoogleService.cs" />
     <Compile Include="Services\Google\Imps\GoogleSheetAdapter.cs" />
     <Compile Include="Services\Insert\Imps\InsertDataCell.cs" />
@@ -113,7 +113,7 @@
     <Compile Include="Services\Insert\InsertService.cs" />
     <Compile Include="Interfaces\IData.cs" />
     <Compile Include="Interfaces\ISheet.cs" />
-    <Compile Include="Interfaces\ISheetsService.cs" />
+    <Compile Include="Interfaces\ISheetService.cs" />
     <Compile Include="Services\ServicesModule.cs" />
     <Compile Include="Services\Settings\Imps\ApplicationSettings.cs" />
     <Compile Include="Services\Settings\Imps\Settings.cs" />

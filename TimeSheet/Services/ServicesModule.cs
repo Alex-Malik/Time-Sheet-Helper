@@ -14,12 +14,11 @@ namespace TimeSheet.Services
         {
             base.Load(builder);
 
-            builder.RegisterType<SettingsService>().AsImplementedInterfaces()
-                .InstancePerMatchingLifetimeScope(App.AppScope);
-
+            builder.RegisterType<SettingsService>().As<ISettingsService>()
+                .InstancePerMatchingLifetimeScope(App.PageScope);
             builder.RegisterType<InsertService>().As<IInsertService>()
                 .InstancePerMatchingLifetimeScope(App.PageScope);
-            builder.RegisterType<GoogleService>().As<ISheetsService>()
+            builder.RegisterType<GoogleService>().As<ISheetService>()
                 .InstancePerMatchingLifetimeScope(App.PageScope);
         }
     }

@@ -16,7 +16,7 @@ namespace TimeSheet.Services.Google
     using Imps;
     using Interfaces;
 
-    internal class GoogleService : ISheetsService
+    internal class GoogleService : ISheetService
     {
         #region Private Fields
         private const string NumberFormatText       = "TEXT";

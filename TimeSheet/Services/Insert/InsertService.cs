@@ -11,10 +11,10 @@ namespace TimeSheet.Services.Insert
         // TODO: Move this constants to the settings.
         private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
         private const string DefaultSheetName     = "Alex Malik";
-        private readonly ISheetsService _sheets;
-        private readonly ISettingsService<IInsertSettings> _settings;
+        private readonly ISheetService   _sheets;
+        private readonly ISettingsService _settings;
 
-        public InsertService(ISettingsService<IInsertSettings> settings, ISheetsService sheets)
+        public InsertService(ISettingsService settings, ISheetService sheets)
         {
             _sheets   = sheets;
             _settings = settings;
@@ -22,6 +22,9 @@ namespace TimeSheet.Services.Insert
 
         public void Save(IData data)
         {
+            ISheetSettings settings = _settings.Load<ISheetSettings>();
+
+            //ISheet sheet = _sheets.GetSheet(settings.SpreadSheetID, settings.SheetName);
             ISheet sheet = _sheets.GetSheet(DefaultSpreadSheetId, DefaultSheetName);
             IRow   row   = new InsertDataRow
                           (new[] {
@@ -38,16 +41,14 @@ namespace TimeSheet.Services.Insert
 
         public Task SaveAsync(IData data)
         {
-            // TODO: IData should be transformed to the IRow and sent to the ISheetsService asynchronously.
+            // TODO: Implement after SheetsService become async.
             throw new NotImplementedException();
         }
 
-        public IInsertSettings LoadSettings() => _settings.Load();
-
-        public Task<IInsertSettings> LoadSettingsAsync() => _settings.LoadAsync();
+        public IInsertSettings LoadSettings() => _settings.Load<IInsertSettings>();
+        public Task<IInsertSettings> LoadSettingsAsync() => _settings.LoadAsync<IInsertSettings>();
 
         public void SaveSettings(IInsertSettings settings) => _settings.Save(settings);
-
         public Task SaveSettingsAsync(IInsertSettings settings) => _settings.SaveAsync(settings);
     }
 }
