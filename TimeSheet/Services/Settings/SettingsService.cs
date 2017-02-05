@@ -7,6 +7,7 @@ namespace TimeSheet.Services.Settings
 {
     using Imps;
     using Interfaces;
+    using System.Reflection;
 
     // TODO: Implementation of ISettingsService should implement explicetly
     // different instances of the ISettingsService<T>.
@@ -20,12 +21,44 @@ namespace TimeSheet.Services.Settings
         #region ISettingsService Support
         public void Save<T>(T settings) where T : class, ISettings
         {
-            throw new NotImplementedException();
+            // Load application settings.
+            AppSettings appset = LoadAppSettings();
+
+            // Load or create settings file.
+            Settings currentSettings = LoadSettings(appset.SettingsFilePath);
+
+            // Check if settings type supported or throw an exception.
+            if (currentSettings is T)
+            {
+                // Map properties of type T to the current settings object.
+                MapProperties(currentSettings, settings);
+
+                // Save settings object to the file.
+                SaveOrCreate(currentSettings, appset.SettingsFilePath);
+            }
+            else
+                throw new NotSupportedException(typeof(T).ToString());
         }
 
-        public Task SaveAsync<T>(T settings) where T : class, ISettings
+        public async Task SaveAsync<T>(T settings) where T : class, ISettings
         {
-            throw new NotImplementedException();
+            // Load application settings.
+            AppSettings appset = await LoadAppSettingsAsync();
+
+            // Load or create settings file.
+            Settings currentSettings = await LoadSettingsAsync(appset.SettingsFilePath);
+
+            // Check if settings type supported or throw an exception.
+            if (currentSettings is T)
+            {
+                // Map properties of type T to the current settings object.
+                await MapPropertiesAsync(currentSettings, settings);
+
+                // Save settings object to the file.
+                await SaveOrCreateAsync(currentSettings, appset.SettingsFilePath);
+            }
+            else
+                throw new NotSupportedException(typeof(T).ToString());
         }
 
         public T Load<T>() where T : class, ISettings
@@ -131,122 +164,51 @@ namespace TimeSheet.Services.Settings
             }
             return settings;
         }
-
-
-        private Settings Save(Settings settings = null)
+        
+        private void MapProperties<T>(Settings currentSettings, T settings) where T : class, ISettings
         {
-            //if (settings == null)
-            //    settings = new Settings();
-
-            //// Load application settings.
-            //AppSettings app = LoadAppSettings();
-            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.Create, FileAccess.Write))
-            //using (var writer = new StreamWriter(stream))
-            //{
-            //    String json = JsonConvert.SerializeObject(settings);
-            //    writer.WriteLine(json);
-            //}
-
-            //return settings;
-            throw new NotImplementedException();
+            foreach (PropertyInfo property in typeof(T).GetProperties())
+            {
+                property.SetValue(currentSettings, property.GetValue(settings));
+            }
         }
 
-        private async Task<Settings> SaveAsync(Settings settings = null)
+        private Task MapPropertiesAsync<T>(Settings currentSettings, T settings) where T : class, ISettings
         {
-            //if (settings == null)
-            //    settings = new Settings();
-
-            //// Load application settings.
-            //AppSettings app = LoadAppSettings();
-            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.Create, FileAccess.Write))
-            //using (var writer = new StreamWriter(stream))
-            //{
-            //    String json = await Task.Factory
-            //        .StartNew(() => JsonConvert.SerializeObject(settings));
-            //    await writer.WriteLineAsync(json);
-            //}
-
-            //return settings;
-            throw new NotImplementedException();
+            return Task.Factory.StartNew(() => 
+            {
+                foreach (PropertyInfo property in typeof(T).GetProperties())
+                {
+                    property.SetValue(currentSettings, property.GetValue(settings));
+                }
+            });
         }
 
-        private Settings Load()
+        private void SaveOrCreate(Settings settings, String filePath)
         {
-            //// Load application settings.
-            //AppSettings app = LoadAppSettings();
-
-            //// Create directory in case when it's not exists.
-            //Directory.CreateDirectory(Path.GetDirectoryName(app.SettingsFilePath));
-
-            //String json = String.Empty;
-            //Settings settings = null;
-
-            //// Read json data from file and convert it to the settings instance.
-            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.OpenOrCreate, FileAccess.Read))
-            //using (var reader = new StreamReader(stream))
-            //{
-            //    json = reader.ReadToEnd();
-            //    settings = JsonConvert.DeserializeObject<Settings>(json);
-            //}
-
-            //if (settings == null)
-            //    return Save();
-            //else
-            //    return settings;
-            throw new NotImplementedException();
+            // Create directory if it not exists.
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            
+            using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var writer = new StreamWriter(stream))
+            {
+                String json = JsonConvert.SerializeObject(settings);
+                writer.WriteLine(json);
+            }
         }
 
-        private async Task<Settings> LoadAsync()
+        private async Task SaveOrCreateAsync(Settings settings, String filePath)
         {
-            //// Load application settings.
-            //AppSettings app = LoadAppSettings();
+            // Create directory if it not exists.
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-            //// Create directory in case when it's not exists.
-            //Directory.CreateDirectory(Path.GetDirectoryName(app.SettingsFilePath));
-
-            //String json = String.Empty;
-            //Settings settings = null;
-
-            //// Read json data from file and convert it to the settings instance.
-            //using (var stream = new FileStream(app.SettingsFilePath, FileMode.OpenOrCreate, FileAccess.Read))
-            //using (var reader = new StreamReader(stream))
-            //{
-            //    json = await reader.ReadToEndAsync();
-            //    settings = await Task.Factory
-            //        .StartNew(() => JsonConvert.DeserializeObject<Settings>(json));
-            //}
-
-            //if (settings == null)
-            //    return await SaveAsync();
-            //else
-            //    return settings;
-            throw new NotImplementedException();
-        }
-
-        private void SaveAppSettings(AppSettings settings = null)
-        {
-            //if (settings == null)
-            //{
-            //    String defSettingsFilePath = String.Empty;
-            //    defSettingsFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            //    defSettingsFilePath = Path.Combine(defSettingsFilePath, "Time Sheet Helper/timesheet.json");
-            //    settings = new AppSettings
-            //    {
-            //        SettingsFilePath = defSettingsFilePath
-            //    };
-            //}
-
-            //// Build path to application settings file.
-            //String path = $"{Environment.CurrentDirectory}\\app.json";
-
-            //// Read json data from file and convert it to the settings instance.
-            //using (var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
-            //using (var writer = new StreamWriter(stream))
-            //{
-            //    String json = JsonConvert.SerializeObject(settings);
-            //    writer.WriteLine(json);
-            //}
-            throw new NotImplementedException();
+            using (var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var writer = new StreamWriter(stream))
+            {
+                String json = await Task.Factory
+                    .StartNew(() => JsonConvert.SerializeObject(settings));
+                await writer.WriteLineAsync(json);
+            }
         }
         #endregion
     }

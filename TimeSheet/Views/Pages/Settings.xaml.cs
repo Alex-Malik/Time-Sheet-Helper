@@ -54,10 +54,18 @@ namespace TimeSheet.Views.Pages
 
         // Bindable Properties
         public ISheetSettings SheetSettings { get; }
+        public String SpreadSheetID { get; set; }
+        public String SheetName     { get; set; }
 
         private void Save()
         {
+            // TODO: Consider using validation here.
+
+            SheetSettings.SpreadSheetID = SpreadSheetID;
+            SheetSettings.SheetName     = SheetName;
+
             _service.Save(SheetSettings);
+            _navigator.GoBack();
         }
 
         private void Cancel()
