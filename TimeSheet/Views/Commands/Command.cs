@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace TimeSheet.Commands
+namespace TimeSheet.Views.Commands
 {
     /// <summary>
     /// Simple command which can execute given method with param or without.

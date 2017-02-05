@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TimeSheet"
-        xmlns:local.controls="clr-namespace:TimeSheet.Controls"
+        xmlns:local.controls="clr-namespace:TimeSheet.Views.Controls"
         mc:Ignorable="d"
         Title="Time Sheet Helper"
         Height="324" Width="800"

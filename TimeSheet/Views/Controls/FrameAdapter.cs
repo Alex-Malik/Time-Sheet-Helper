@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using TimeSheet.Shared;
 
-namespace TimeSheet.Controls
+namespace TimeSheet.Views.Controls
 {
     public class FrameAdapter : Frame, INavigationControl
     {

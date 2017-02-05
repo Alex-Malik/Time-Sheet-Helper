@@ -95,9 +95,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\CommandsFactory.cs" />
-    <Compile Include="Controls\FrameAdapter.cs" />
+    <Compile Include="Views\Commands\Command.cs" />
+    <Compile Include="Views\Commands\CommandsFactory.cs" />
+    <Compile Include="Views\Controls\FrameAdapter.cs" />
     <Compile Include="Interfaces\IApplicationSettings.cs" />
     <Compile Include="Interfaces\IInsertService.cs" />
     <Compile Include="Interfaces\IInsertSettings.cs" />
