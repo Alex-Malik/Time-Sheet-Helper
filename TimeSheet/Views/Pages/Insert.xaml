@@ -73,9 +73,9 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Style="{DynamicResource Style.Button.Save}"      Command="{Binding SaveCommand}"/>
-                <Button Grid.Column="1" Style="{DynamicResource Style.Button.Dashboard}" Command="{Binding GoToTimetableCommand}"/>
-                <Button Grid.Column="2" Style="{DynamicResource Style.Button.Settings}"  Command="{Binding GoToSettingsCommand}"/>
+                <Button Grid.Column="0" Style="{DynamicResource Style.Button.P.Insert.Save}" Command="{Binding SaveCommand}"/>
+                <Button Grid.Column="1" Style="{DynamicResource Style.Button.Dashboard}"   Command="{Binding GoToTimetableCommand}"/>
+                <Button Grid.Column="2" Style="{DynamicResource Style.Button.Settings}"    Command="{Binding GoToSettingsCommand}"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>

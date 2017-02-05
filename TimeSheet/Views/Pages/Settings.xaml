@@ -16,17 +16,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Spread Sheet ID"/>
-        <TextBox   Grid.Row="1" Text="{Binding SheetSettings.SpreadSheetID}"/>
-        <TextBlock Grid.Row="2" Text="Sheet Name"/>
-        <TextBox   Grid.Row="3" Text="{Binding SheetSettings.SheetName}"/>
+        <TextBlock Grid.Row="0" Style="{DynamicResource Style.TextBlock.P.Settings}" Text="Spread Sheet ID"/>
+        <TextBox   Grid.Row="1" Style="{DynamicResource Style.TextBox.Default}"      Text="{Binding SheetSettings.SpreadSheetID}"/>
+        <TextBlock Grid.Row="2" Style="{DynamicResource Style.TextBlock.P.Settings}" Text="Sheet Name"/>
+        <TextBox   Grid.Row="3" Style="{DynamicResource Style.TextBox.Default}"      Text="{Binding SheetSettings.SheetName}"/>
         <Grid      Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Command="{Binding SaveCommand}"   Content="Save"/>
-            <Button Grid.Column="1" Command="{Binding CancelCommand}" Content="Cancel"/>
+            <Button Grid.Column="0" Style="{DynamicResource Style.Button.P.Settings.Save}"   Command="{Binding SaveCommand}"/>
+            <Button Grid.Column="1" Style="{DynamicResource Style.Button.P.Settings.Cancel}" Command="{Binding CancelCommand}"/>
         </Grid>
     </Grid>
 </Page>
