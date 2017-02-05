@@ -9,17 +9,17 @@ namespace TimeSheet.Services.Settings.Imps
     {
         #region IInsertSettings
         // View specific values.
-        Int32   IInsertSettings.StepInHours    { get; set; } = 1;
-        Int32   IInsertSettings.StepInMinutes  { get; set; } = 15;
-        Boolean IInsertSettings.AllowDataMerge { get; set; } = true;
+        public Int32   StepInHours    { get; set; } = 1;
+        public Int32   StepInMinutes  { get; set; } = 15;
+        public Boolean AllowDataMerge { get; set; } = true;
 
         // Data specific values.
-        IEnumerable<String> IInsertSettings.Projects { get; set; } = new List<String>();
+        public IEnumerable<String> Projects { get; set; } = new List<String>();
         #endregion IInsertSettings
 
         #region ISheetsSettings
-        String ISheetSettings.SpreadSheetID { get; set; } = String.Empty;
-        String ISheetSettings.SheetName     { get; set; } = String.Empty;
+        public String SpreadSheetID { get; set; } = String.Empty;
+        public String SheetName     { get; set; } = String.Empty;
         #endregion ISheetsSettings
     }
 }

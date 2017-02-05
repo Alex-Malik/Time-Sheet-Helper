@@ -43,6 +43,8 @@ namespace TimeSheet.Views.Pages
             _service   = service;
 
             SheetSettings = _service.Load<ISheetSettings>();
+            SpreadSheetID = SheetSettings.SpreadSheetID;
+            SheetName     = SheetSettings.SheetName;
         }
 
         // Events

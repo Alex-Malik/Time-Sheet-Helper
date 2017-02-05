@@ -8,9 +8,6 @@ namespace TimeSheet.Services.Insert
 
     internal class InsertService : IInsertService
     {
-        // TODO: Move this constants to the settings.
-        private const string DefaultSpreadSheetId = "1U8bBQtr4kFQkOeLoLlOrryFflDPzOb30ECDr8mCIDHo";
-        private const string DefaultSheetName     = "Alex Malik";
         private readonly ISheetService   _sheets;
         private readonly ISettingsService _settings;
 
@@ -24,8 +21,7 @@ namespace TimeSheet.Services.Insert
         {
             ISheetSettings settings = _settings.Load<ISheetSettings>();
 
-            //ISheet sheet = _sheets.GetSheet(settings.SpreadSheetID, settings.SheetName);
-            ISheet sheet = _sheets.GetSheet(DefaultSpreadSheetId, DefaultSheetName);
+            ISheet sheet = _sheets.GetSheet(settings.SpreadSheetID, settings.SheetName);
             IRow   row   = new InsertDataRow
                           (new[] {
                               new InsertDataCell(data.CreatedAt, CellDataType.Date),
