@@ -14,6 +14,7 @@ namespace TimeSheet.Shared
             base.Load(builder);
 
             builder.RegisterInstance(NavigationManager.Instance);
+            builder.RegisterInstance(ControlsRouter.Instance);
         }
     }
 }

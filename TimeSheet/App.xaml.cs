@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Runtime.ExceptionServices;
+using System.Windows.Threading;
 
 namespace TimeSheet
 {
@@ -14,6 +16,7 @@ namespace TimeSheet
     using Shared;
     using Views;
     using Views.Pages;
+    using Interfaces;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -95,6 +98,9 @@ namespace TimeSheet
             MainWindow = Container.Resolve<MainWindow>();
             MainWindow.Show();
 
+            AppDomain.CurrentDomain.FirstChanceException += OnDomainException;
+            DispatcherUnhandledException += OnApplicationException;
+
             NavigationManager.Instance.GoTo<Insert>();
         }
 
@@ -122,6 +128,32 @@ namespace TimeSheet
             builder.RegisterModule<ServicesModule>();
 
             return builder.Build();
+        }
+
+        private void OnDomainException(object sender, FirstChanceExceptionEventArgs e)
+        {
+            IMessageControl messages = ControlsRouter.Instance.Get<IMessageControl>();
+
+            // If messages control found then show error
+            // message; otherwise navigate to error page.
+            if (messages != null)
+                messages.ShowError(e.Exception.Message);
+            else
+                NavigationManager.Instance.GoTo<Error>(e.Exception);
+        }
+
+        private void OnApplicationException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            IMessageControl messages = ControlsRouter.Instance.Get<IMessageControl>();
+
+            // If messages control found then show error
+            // message; otherwise navigate to error page.
+            if (messages != null)
+                messages.ShowError(e.Exception.Message);
+            else
+                NavigationManager.Instance.GoTo<Error>(e.Exception);
+
+            e.Handled = true;
         }
     }
 }

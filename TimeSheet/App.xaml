@@ -6,7 +6,6 @@
     xmlns:local.controls="clr-namespace:TimeSheet.Views.Controls"
     xmlns:System="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
-        
         <!--#region Colors & Brushes-->
 
         <Color x:Key="Color.Default.Background">#FFFFFF</Color>
@@ -99,13 +98,25 @@
         <Geometry x:Key="Geometry.Cancel">
             M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z
         </Geometry>
+        
+        <Geometry x:Key="Geometry.Info">
+            M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Error">
+            M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z
+        </Geometry>
+
+        <Geometry x:Key="Geometry.Warning">
+            M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z
+        </Geometry>
         <!--#endregion-->
 
         <!--#region Styles-->
 
         <Style x:Key="Style.Frame" TargetType="Frame">
-            <Setter Property="Margin" Value="{StaticResource Thickness.Default.Frame}"/>
-            <Setter Property="Padding" Value="{StaticResource Thickness.Default.Frame}"/>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Padding" Value="0 0 0 0"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
 
@@ -687,6 +698,96 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <Style x:Key="Style.Message" TargetType="local.controls:Message">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="local.controls:Message">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <DockPanel LastChildFill="True" Margin="{TemplateBinding Padding}">
+                                <Path DockPanel.Dock="Left" 
+                                      Style="{StaticResource Style.Path.32}"
+                                      Fill="{TemplateBinding Foreground}" 
+                                      Data="{TemplateBinding TypeGeometry}"/>
+                                <Label DockPanel.Dock="Left" 
+                                       FontSize="{TemplateBinding FontSize}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{TemplateBinding Foreground}" 
+                                       Content="{TemplateBinding TypeName}"
+                                       VerticalAlignment="Center"
+                                       Margin="8 0 0 0"/>
+                                <Button DockPanel.Dock="Right"
+                                        Style="{StaticResource Style.Button.Geometry.24}"
+                                        Content="{StaticResource Geometry.Cancel}"
+                                        Command="{TemplateBinding CloseCommand}"
+                                        Margin="0 0 0 0" Padding="0 0 0 0"
+                                        Foreground="{TemplateBinding Foreground}"/>
+
+                                <ContentPresenter 
+                                    Content="{TemplateBinding Content}"
+                                    VerticalAlignment="Stretch" 
+                                    HorizontalAlignment="Stretch"
+                                    TextElement.FontSize="{TemplateBinding FontSize}"
+                                    TextElement.FontWeight="{TemplateBinding FontWeight}"
+                                    TextElement.Foreground="{TemplateBinding Foreground}"/>
+                            </DockPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Padding" Value="8 8 8 8"/>
+
+            <Setter Property="FontSize"   Value="16"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+
+            <Setter Property="VerticalAlignment"   Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
+        <Style x:Key="Style.Message.Info" TargetType="local.controls:Message" BasedOn="{StaticResource Style.Message}">
+            <Setter Property="Background" Value="{StaticResource Brush.Default.Background.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="FontBrush"  Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="TypeGeometry" Value="{StaticResource Geometry.Info}"/>
+            <Setter Property="TypeName" Value="Info"/>
+        </Style>
+
+        <Style x:Key="Style.Message.Error" TargetType="local.controls:Message" BasedOn="{StaticResource Style.Message}">
+            <Setter Property="Background" Value="{StaticResource Brush.Default.Background.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="FontBrush"  Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="TypeGeometry" Value="{StaticResource Geometry.Error}"/>
+            <Setter Property="TypeName" Value="Error"/>
+        </Style>
+
+        <Style x:Key="Style.Message.Warning" TargetType="local.controls:Message" BasedOn="{StaticResource Style.Message}">
+            <Setter Property="Background" Value="{StaticResource Brush.Default.Background.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="FontBrush"  Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="TypeGeometry" Value="{StaticResource Geometry.Warning}"/>
+            <Setter Property="TypeName" Value="Warning"/>
+        </Style>
+
+        <Style x:Key="Style.MessageHost" TargetType="local.controls:MessageHost">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="local.controls:MessageHost">
+                        <Grid>
+                            <local.controls:Message x:Name="xINF" Style="{TemplateBinding InfoMessageStyle}"    />
+                            <local.controls:Message x:Name="xERR" Style="{TemplateBinding ErrorMessageStyle}"   />
+                            <local.controls:Message x:Name="xWRN" Style="{TemplateBinding WarningMessageStyle}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="InfoMessageStyle"    Value="{StaticResource Style.Message.Info}"/>
+            <Setter Property="ErrorMessageStyle"   Value="{StaticResource Style.Message.Error}"/>
+            <Setter Property="WarningMessageStyle" Value="{StaticResource Style.Message.Warning}"/>
         </Style>
 
         <!--#endregion-->

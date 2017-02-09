@@ -95,6 +95,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Interfaces\IControl.cs" />
+    <Compile Include="Shared\ControlsRouter.cs" />
     <Compile Include="Views\Commands\Command.cs" />
     <Compile Include="Views\Commands\CommandsFactory.cs" />
     <Compile Include="Views\Controls\FrameAdapter.cs" />
@@ -120,6 +122,8 @@
     <Compile Include="Services\Settings\SettingsService.cs" />
     <Compile Include="Shared\NavigationManager.cs" />
     <Compile Include="Shared\SharedModule.cs" />
+    <Compile Include="Views\Controls\Message.cs" />
+    <Compile Include="Views\Controls\MessageHost.cs" />
     <Compile Include="Views\Pages\Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
     </Compile>

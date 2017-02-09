@@ -8,7 +8,10 @@
         mc:Ignorable="d"
         Title="Time Sheet Helper"
         Height="324" Width="800"
-        ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen">
-    <local.controls:FrameAdapter Style="{DynamicResource Style.Frame}"/>
+    <Grid>
+        <local.controls:FrameAdapter Style="{DynamicResource Style.Frame}"/>
+        <local.controls:MessageHost  Style="{DynamicResource Style.MessageHost}"/>
+    </Grid>
+    
 </Window>
