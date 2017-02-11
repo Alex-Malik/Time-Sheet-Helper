@@ -36,12 +36,11 @@ namespace TimeSheet
 
         #endregion
 
+        #region Container Implementation
         public const string AppScope = "app";
-        public const string UserScope = "user";
         public const string PageScope = "page";
 
         private ILifetimeScope _app;
-        private ILifetimeScope _user;
         private ILifetimeScope _page;
 
         public IContainer Container { get; private set; }
@@ -56,28 +55,10 @@ namespace TimeSheet
             }
         }
 
-        public ILifetimeScope BeginUserScope()
-        {
-            EndUserScope();
-            _user = AppplicationScope.BeginLifetimeScope(UserScope);
-            return _user;
-        }
-
-        public void EndUserScope()
-        {
-            if (_user != null)
-            {
-                _user.Dispose();
-                _user = null;
-            }
-        }
-
         public ILifetimeScope BeginPageScope()
         {
             EndPageScope();
-            if (_user == null)
-                _user = BeginUserScope();
-            _page = _user.BeginLifetimeScope(PageScope);
+            _page = AppplicationScope.BeginLifetimeScope(PageScope);
             return _page;
         }
 
@@ -89,71 +70,114 @@ namespace TimeSheet
                 _page = null;
             }
         }
-        
+        #endregion Container Implementation
+
+        #region App Event Overrides
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            Container  = CreateContainer();
-            MainWindow = Container.Resolve<MainWindow>();
-            MainWindow.Show();
-
-            AppDomain.CurrentDomain.FirstChanceException += OnDomainException;
-            DispatcherUnhandledException += OnApplicationException;
-
+            InitializeContainer();
+            InitializeExceptionsHandling();
+            InitializeMainWindow();
+            
             NavigationManager.Instance.GoTo<Insert>();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (_page != null)
-                _page.Dispose();
-            if (_user != null)
-                _user.Dispose();
-            if (_app != null)
-                _app.Dispose();
-
-            Container = null;
-
+            DeinitializeContainer();
             base.OnExit(e);
         }
+        #endregion App Event Overrides
 
-        private IContainer CreateContainer()
+        #region Private Methods
+        private void InitializeContainer()
         {
-            var builder = new ContainerBuilder();
+            ContainerBuilder builder = new ContainerBuilder();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).PropertiesAutowired();
 
             builder.RegisterModule<SharedModule>();
             builder.RegisterModule<ServicesModule>();
 
-            return builder.Build();
+            Container = builder.Build();
+        }
+
+        private void InitializeExceptionsHandling()
+        {
+            AppDomain.CurrentDomain.FirstChanceException += OnDomainException;
+            DispatcherUnhandledException += OnApplicationException;
+        }
+
+        private void InitializeMainWindow()
+        {
+            MainWindow = Container.Resolve<MainWindow>();
+            MainWindow.Show();
+        }
+
+        private void DeinitializeContainer()
+        {
+            if (_page != null)
+                _page.Dispose();
+            if (_app != null)
+                _app.Dispose();
+
+            Container.Dispose();
+            Container = null;
         }
 
         private void OnDomainException(object sender, FirstChanceExceptionEventArgs e)
         {
+            // Try to get messages control and show error on the screen, but
+            // if control will not be found then we try to navigate to the 
+            // error screen, but if navigation impossible then we just log e.
+
             IMessageControl messages = ControlsRouter.Instance.Get<IMessageControl>();
 
             // If messages control found then show error
             // message; otherwise navigate to error page.
             if (messages != null)
+            {
                 messages.ShowError(e.Exception.Message);
-            else
+            }
+            else if (NavigationManager.Instance.NavigationPossible())
+            {
                 NavigationManager.Instance.GoTo<Error>(e.Exception);
+            }
+            else
+            {
+                // TODO: Implement logger, log exception, exit application.
+                App.Instance.Shutdown();
+            }
         }
 
         private void OnApplicationException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
+            // Try to get messages control and show error on the screen, but
+            // if control will not be found then we try to navigate to the 
+            // error screen, but if navigation impossible then we just log e.
+
             IMessageControl messages = ControlsRouter.Instance.Get<IMessageControl>();
 
             // If messages control found then show error
             // message; otherwise navigate to error page.
             if (messages != null)
+            {
                 messages.ShowError(e.Exception.Message);
-            else
+            }
+            else if (NavigationManager.Instance.NavigationPossible())
+            {
                 NavigationManager.Instance.GoTo<Error>(e.Exception);
+            }
+            else
+            {
+                // TODO: Implement logger, log exception, exit application.
+                App.Instance.Shutdown();
+            }
 
             e.Handled = true;
         }
+        #endregion Private Methods
     }
 }

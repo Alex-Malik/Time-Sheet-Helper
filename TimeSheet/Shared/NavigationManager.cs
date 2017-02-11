@@ -11,16 +11,19 @@ namespace TimeSheet.Shared
     public class NavigationManager
     {
         #region Singleton Implementation
-
         public static readonly NavigationManager Instance = new NavigationManager();
 
         private NavigationManager() { }
-
-        #endregion
+        #endregion Singleton Implementation
 
         private const string MessageControlNotRegistered = "Navigation control should be registered before navigation operation.";
 
         private INavigationControl _control;
+
+        public bool NavigationPossible()
+        {
+            return _control != null;
+        }
 
         public void GoTo<T>() where T : Page
         {
@@ -76,4 +79,6 @@ namespace TimeSheet.Shared
 
         void ClearHistory();
     }
+
+
 }

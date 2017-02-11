@@ -777,9 +777,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="local.controls:MessageHost">
                         <Grid>
-                            <local.controls:Message x:Name="xINF" Style="{TemplateBinding InfoMessageStyle}"    />
-                            <local.controls:Message x:Name="xERR" Style="{TemplateBinding ErrorMessageStyle}"   />
-                            <local.controls:Message x:Name="xWRN" Style="{TemplateBinding WarningMessageStyle}" />
+                            <local.controls:Message x:Name="xINF" Style="{TemplateBinding InfoMessageStyle}"    Visibility="Collapsed"/>
+                            <local.controls:Message x:Name="xERR" Style="{TemplateBinding ErrorMessageStyle}"   Visibility="Collapsed"/>
+                            <local.controls:Message x:Name="xWRN" Style="{TemplateBinding WarningMessageStyle}" Visibility="Collapsed"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
