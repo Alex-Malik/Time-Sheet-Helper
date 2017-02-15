@@ -8,28 +8,28 @@
     <Application.Resources>
         <!--#region Colors & Brushes-->
 
-        <Color x:Key="Color.Default.Background">#FFFFFF</Color>
-        <Color x:Key="Color.Default.Background.LightGrey">#f3f3f3</Color>
-        <Color x:Key="Color.Default.Background.DarkGrey">#dddddd</Color>
-        <Color x:Key="Color.Default.Foreground">#000000</Color>
-        <Color x:Key="Color.Default.Foreground.LightGrey">#bcbcbc</Color>
-        <Color x:Key="Color.Default.Foreground.DarkGrey">#737373</Color>
+        <Color x:Key="Color.Background">       #ffffff</Color>
+        <Color x:Key="Color.Background.LGrey"> #f3f3f3</Color>
+        <Color x:Key="Color.Background.DGrey"> #dddddd</Color>
+        <Color x:Key="Color.Foreground">       #737373</Color>
+        <Color x:Key="Color.Foreground.LGrey"> #bcbcbc</Color>
+        <Color x:Key="Color.Foreground.DGrey"> #444444</Color>
 
-        <SolidColorBrush x:Key="Brush.Default.Background" Color="{StaticResource Color.Default.Background}" />
-        <SolidColorBrush x:Key="Brush.Default.Background.LightGrey" Color="{StaticResource Color.Default.Background.LightGrey}" />
-        <SolidColorBrush x:Key="Brush.Default.Background.DarkGrey" Color="{StaticResource Color.Default.Background.DarkGrey}" />
-        <SolidColorBrush x:Key="Brush.Default.Foreground" Color="{StaticResource Color.Default.Foreground}" />
-        <SolidColorBrush x:Key="Brush.Default.Foreground.LightGrey" Color="{StaticResource Color.Default.Foreground.LightGrey}" />
-        <SolidColorBrush x:Key="Brush.Default.Foreground.DarkGrey" Color="{StaticResource Color.Default.Foreground.DarkGrey}" />
+        <SolidColorBrush x:Key="Brush.Background"       Color="{StaticResource Color.Background}"/>
+        <SolidColorBrush x:Key="Brush.Background.LGrey" Color="{StaticResource Color.Background.LGrey}"/>
+        <SolidColorBrush x:Key="Brush.Background.DGrey" Color="{StaticResource Color.Background.DGrey}"/>
+        <SolidColorBrush x:Key="Brush.Foreground"       Color="{StaticResource Color.Foreground}"/>
+        <SolidColorBrush x:Key="Brush.Foreground.LGrey" Color="{StaticResource Color.Foreground.LGrey}"/>
+        <SolidColorBrush x:Key="Brush.Foreground.DGrey" Color="{StaticResource Color.Foreground.DGrey}"/>
 
+        <SolidColorBrush x:Key="Brush.Background.Inversed" Color="{StaticResource Color.Foreground}"/>
+        
         <!--#endregion-->
 
         <!--#region Variables-->
 
         <Thickness x:Key="Thickness.Default" Left="4" Top="4" Right="4" Bottom="4"/>
         <Thickness x:Key="Thickness.Default.Frame" Left="4" Top="4" Right="4" Bottom="4"/>
-
-        <CornerRadius x:Key="CornerRadius.Default" TopLeft="4" TopRight="4" BottomLeft="4" BottomRight="4"/>
 
         <System:Double x:Key="Double.Default.FontSize">16</System:Double>
 
@@ -145,7 +145,7 @@
 
         <Style x:Key="Style.Path.Down" TargetType="Path" BasedOn="{StaticResource Style.Path}">
             <Setter Property="Data" Value="{StaticResource Geometry.Down}"/>
-            <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Fill" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Margin" Value="8 2 64 0"/>
             <Setter Property="Height" Value="12"/>
             <Setter Property="Width" Value="12"/>
@@ -153,7 +153,7 @@
 
         <Style x:Key="Style.Path.Right" TargetType="Path" BasedOn="{StaticResource Style.Path}">
             <Setter Property="Data" Value="{StaticResource Geometry.Right}"/>
-            <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Fill" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Margin" Value="8 2 8 0"/>
             <Setter Property="Height" Value="12"/>
             <Setter Property="Width" Value="12"/>
@@ -161,7 +161,7 @@
 
         <Style x:Key="Style.Path.ClockIn" TargetType="Path" BasedOn="{StaticResource Style.Path}">
             <Setter Property="Data"   Value="{StaticResource Geometry.ClockIn}"/>
-            <Setter Property="Fill"   Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Fill"   Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Margin" Value="4 4 0 0"/>
             <Setter Property="Height" Value="32"/>
             <Setter Property="Width"  Value="32"/>
@@ -172,7 +172,7 @@
 
         <Style x:Key="Style.Path.ClockOut" TargetType="Path" BasedOn="{StaticResource Style.Path}">
             <Setter Property="Data"   Value="{StaticResource Geometry.ClockOut}"/>
-            <Setter Property="Fill"   Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Fill"   Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Margin" Value="4 4 0 0"/>
             <Setter Property="Height" Value="32"/>
             <Setter Property="Width"  Value="32"/>
@@ -183,7 +183,7 @@
 
         <Style x:Key="Style.Path.ClockCalendar" TargetType="Path" BasedOn="{StaticResource Style.Path}">
             <Setter Property="Data" Value="{StaticResource Geometry.ClockCalendar}"/>
-            <Setter Property="Fill" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Fill" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Margin" Value="0"/>
             <Setter Property="Height" Value="32"/>
             <Setter Property="Width" Value="32"/>
@@ -207,8 +207,8 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
                             <ScrollViewer x:Name="PART_ContentHost" TextElement.Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                     </ControlTemplate>
@@ -217,22 +217,22 @@
         </Style>
 
         <Style x:Key="Style.TextBox.Default" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox}">
-            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
-            <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Margin"   Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Padding"  Value="{StaticResource Thickness.Default}"/>
             <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
-            <Setter Property="Background" Value="{StaticResource Brush.Default.Background}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground"  Value="{StaticResource Brush.Foreground}"/>
+            <Setter Property="Background"  Value="{StaticResource Brush.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="BorderThickness" Value="0 0 0 2"/>
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground"  Value="{StaticResource Brush.Foreground.DGrey}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
                 <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground"  Value="{StaticResource Brush.Foreground.DGrey}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -268,15 +268,6 @@
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="SelectionBrush" Value="Transparent"/>
-
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
-                </Trigger>
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
 
         <Style x:Key="Style.TextBox.Time.Hours" TargetType="TextBox" BasedOn="{StaticResource Style.TextBox.Time}">
@@ -294,9 +285,9 @@
             <Setter Property="Padding" Value="0 0 0 0"/>
             <Setter Property="FontSize" Value="40"/>
             <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
-            <Setter Property="Background" Value="{StaticResource Brush.Default.Background}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
@@ -306,27 +297,27 @@
             <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
             <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
             <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
         </Style>
         
 
         <Style x:Key="Style.TextBlock.Default" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
             <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
         </Style>
 
         <Style x:Key="Style.TextBlock.Time" TargetType="TextBlock">
             <Setter Property="Margin"  Value="0 -3 0 0"/>
             <Setter Property="Padding" Value="0 0 0 0"/>
             <Setter Property="FontSize" Value="54"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
         </Style>
 
         <Style x:Key="Style.TextBlock.Date" TargetType="TextBlock">
             <Setter Property="Margin"  Value="4 2 0 0"/>
             <Setter Property="Padding" Value="0 0 0 0"/>
             <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
         </Style>
 
         <Style x:Key="Style.TextBlock.P.Settings" TargetType="TextBlock" BasedOn="{StaticResource Style.TextBlock.Default}">
@@ -355,20 +346,20 @@
         </Style>
 
         <Style x:Key="Style.Button.Geometry" TargetType="Button">
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Cursor"  Value="Hand"/>
+            <Setter Property="Margin"  Value="{StaticResource Thickness.Default}"/>
             <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground"  Value="{StaticResource Brush.Foreground}"/>
+            <Setter Property="Background"  Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -378,14 +369,13 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                            BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
-                            CornerRadius="{StaticResource CornerRadius.Default}"
-                            SnapsToDevicePixels="True">
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
                             <Path Style="{StaticResource Style.Path.16}"
-                              Fill="{TemplateBinding Foreground}"
-                              Data="{TemplateBinding Content}"
-                              Margin="{TemplateBinding Padding}"/>
+                                  Fill="{TemplateBinding Foreground}"
+                                  Data="{TemplateBinding Content}"
+                                  Margin="{TemplateBinding Padding}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -397,14 +387,13 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                            BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
-                            CornerRadius="{StaticResource CornerRadius.Default}"
-                            SnapsToDevicePixels="True">
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
                             <Path Style="{StaticResource Style.Path.24}"
-                              Fill="{TemplateBinding Foreground}"
-                              Data="{TemplateBinding Content}"
-                              Margin="{TemplateBinding Padding}"/>
+                                  Fill="{TemplateBinding Foreground}"
+                                  Data="{TemplateBinding Content}"
+                                  Margin="{TemplateBinding Padding}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -416,14 +405,13 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                            BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
-                            CornerRadius="{StaticResource CornerRadius.Default}"
-                            SnapsToDevicePixels="True">
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
                             <Path Style="{StaticResource Style.Path.32}"
-                              Fill="{TemplateBinding Foreground}"
-                              Data="{TemplateBinding Content}"
-                              Margin="{TemplateBinding Padding}"/>
+                                  Fill="{TemplateBinding Foreground}"
+                                  Data="{TemplateBinding Content}"
+                                  Margin="{TemplateBinding Padding}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -455,9 +443,9 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Path      Grid.Column="0" Style="{StaticResource Style.Path.24}" Data="{StaticResource Geometry.Save}"
-                                   Fill="{TemplateBinding Foreground}" Margin="0 0 8 0"/>
-                                <TextBlock Grid.Column="1" Style="{StaticResource Style.TextBlock.Default}" Text="SAVE" Margin="8 0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold"
-                                   Foreground="{TemplateBinding Foreground}"/>
+                                                           Fill="{TemplateBinding Foreground}" Margin="0 0 8 0"/>
+                                <TextBlock Grid.Column="1" Style="{StaticResource Style.TextBlock.Default}" Text="SAVE" Margin="8 0" 
+                                           VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold" Foreground="{TemplateBinding Foreground}"/>
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -466,7 +454,7 @@
             
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="0 8 0 8"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
@@ -489,8 +477,8 @@
                                 </Grid.ColumnDefinitions>
                                 <Path      Grid.Column="0" Style="{StaticResource Style.Path.24}" Data="{StaticResource Geometry.Cancel}"
                                    Fill="{TemplateBinding Foreground}" Margin="0 0 8 0"/>
-                                <TextBlock Grid.Column="1" Style="{StaticResource Style.TextBlock.Default}" Text="CANCEL" Margin="8 0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold"
-                                   Foreground="{TemplateBinding Foreground}"/>
+                                <TextBlock Grid.Column="1" Style="{StaticResource Style.TextBlock.Default}" Text="CANCEL" Margin="8 0" 
+                                           VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold" Foreground="{TemplateBinding Foreground}"/>
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -498,7 +486,7 @@
             </Setter>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="0 8 0 8"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
@@ -523,14 +511,14 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                            BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
-                            CornerRadius="28"
-                            SnapsToDevicePixels="True">
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="28"
+                                SnapsToDevicePixels="True">
                             <Path Style="{StaticResource Style.Path.32}"
-                              Fill="{TemplateBinding Foreground}"
-                              Data="{TemplateBinding Content}"
-                              Margin="{TemplateBinding Padding}"/>
+                                  Fill="{TemplateBinding Foreground}"
+                                  Data="{TemplateBinding Content}"
+                                  Margin="{TemplateBinding Padding}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -540,8 +528,8 @@
             <Setter Property="Margin" Value="0 0 32 32"/>
             <Setter Property="Padding" Value="8 8 8 8"/>
             <Setter Property="Content" Value="{StaticResource Geometry.Insert}"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Background}"/>
-            <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Background}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Foreground.LGrey}"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
 
@@ -550,10 +538,10 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Background" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="Background" Value="{StaticResource Brush.Foreground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -564,8 +552,8 @@
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}">
                             <Path Style="{StaticResource Style.Path.16}" 
-                              Data="{StaticResource Geometry.Up}" 
-                              Fill="{TemplateBinding Foreground}"/>
+                                  Data="{StaticResource Geometry.Up}" 
+                                  Fill="{TemplateBinding Foreground}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -577,7 +565,7 @@
             <Setter Property="Width"  Value="32"/>
             <Setter Property="Height" Value="16"/>
 
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
@@ -586,10 +574,10 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -600,8 +588,8 @@
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}">
                             <Path Style="{StaticResource Style.Path.16}" 
-                              Data="{StaticResource Geometry.Down}" 
-                              Fill="{TemplateBinding Foreground}"/>
+                                  Data="{StaticResource Geometry.Down}" 
+                                  Fill="{TemplateBinding Foreground}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -613,7 +601,7 @@
             <Setter Property="Width"  Value="32"/>
             <Setter Property="Height" Value="16"/>
 
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
@@ -622,10 +610,10 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -637,10 +625,10 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -650,12 +638,12 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Background}"/>
-                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Background}"/>
+                    <Setter Property="Background" Value="{StaticResource Brush.Foreground.LGrey}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Background}"/>
-                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Background}"/>
+                    <Setter Property="Background" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -667,24 +655,24 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Background}"/>
+                    <Setter Property="Background" Value="{StaticResource Brush.Foreground.LGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Background}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Background}"/>
+                    <Setter Property="Background" Value="{StaticResource Brush.Foreground.DGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Background}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
 
         <Style x:Key="Style.ListBox" TargetType="ListBox">
-            <Setter Property="Margin" Value="{StaticResource Thickness.Default}"/>
+            <Setter Property="Margin"  Value="{StaticResource Thickness.Default}"/>
             <Setter Property="Padding" Value="{StaticResource Thickness.Default}"/>
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background"  Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         </Style>
 
@@ -749,25 +737,25 @@
         </Style>
 
         <Style x:Key="Style.Message.Info" TargetType="local.controls:Message" BasedOn="{StaticResource Style.Message}">
-            <Setter Property="Background" Value="{StaticResource Brush.Default.Background.LightGrey}"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
-            <Setter Property="FontBrush"  Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Background.LGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
+            <Setter Property="FontBrush"  Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="TypeGeometry" Value="{StaticResource Geometry.Info}"/>
             <Setter Property="TypeName" Value="Info"/>
         </Style>
 
         <Style x:Key="Style.Message.Error" TargetType="local.controls:Message" BasedOn="{StaticResource Style.Message}">
-            <Setter Property="Background" Value="{StaticResource Brush.Default.Background.LightGrey}"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
-            <Setter Property="FontBrush"  Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Background.LGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
+            <Setter Property="FontBrush"  Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="TypeGeometry" Value="{StaticResource Geometry.Error}"/>
             <Setter Property="TypeName" Value="Error"/>
         </Style>
 
         <Style x:Key="Style.Message.Warning" TargetType="local.controls:Message" BasedOn="{StaticResource Style.Message}">
-            <Setter Property="Background" Value="{StaticResource Brush.Default.Background.LightGrey}"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
-            <Setter Property="FontBrush"  Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Background.LGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
+            <Setter Property="FontBrush"  Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="TypeGeometry" Value="{StaticResource Geometry.Warning}"/>
             <Setter Property="TypeName" Value="Warning"/>
         </Style>
@@ -797,17 +785,17 @@
         <Style x:Key="Style.Button.Calendar.Control" TargetType="Button" BasedOn="{StaticResource Style.Button}">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground.DGrey}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -856,7 +844,7 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.DarkGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground.DGrey}"/>
             <Setter Property="Opacity" Value=".75"/>
         </Style>
 
@@ -868,17 +856,17 @@
                             <Storyboard x:Key="Storyboard.CommonStates.MouseOver">
                                 <ColorAnimation Storyboard.TargetName="Content"
                                                 Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground.DarkGrey}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground.DGrey}"/>
                             </Storyboard>
                             <Storyboard x:Key="Storyboard.CommonStates.Pressed">
                                 <ColorAnimation Storyboard.TargetName="Content"
                                                 Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground}"/>
                             </Storyboard>
                             <Storyboard x:Key="Storyboard.DayStates.Today">
                                 <ColorAnimation Storyboard.TargetName="Root"
                                                 Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground.LightGrey}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground.LGrey}"/>
                             </Storyboard>
                             <Storyboard x:Key="Storyboard.BlackoutDayStates.BlackoutDay">
                                 <DoubleAnimation Storyboard.TargetName="Content"
@@ -893,13 +881,13 @@
                             <Storyboard x:Key="Storyboard.SelectionStates.Selected">
                                 <ColorAnimation Storyboard.TargetName="Root"
                                                 Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground.LightGrey}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground.LGrey}"/>
                                 <ColorAnimation Storyboard.TargetName="Root"
                                                 Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground.LightGrey}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground.LGrey}"/>
                                 <ColorAnimation Storyboard.TargetName="Content"
                                                 Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Background}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Background}"/>
                             </Storyboard>
                         </ControlTemplate.Resources>
                         <Border x:Name="Root"
@@ -947,7 +935,7 @@
                 </Setter.Value>
             </Setter>
 
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="1 1 1 1"/>
@@ -963,12 +951,12 @@
                             <Storyboard x:Key="Storyboard.CommonStates.MouseOver">
                                 <ColorAnimation Storyboard.TargetName="Content"
                                                 Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground.DarkGrey}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground.DGrey}"/>
                             </Storyboard>
                             <Storyboard x:Key="Storyboard.CommonStates.Pressed">
                                 <ColorAnimation Storyboard.TargetName="Content"
                                                 Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground}"/>
                             </Storyboard>
                             <Storyboard x:Key="Storyboard.ActiveStates.Inactive">
                                 <DoubleAnimation Storyboard.TargetName="Content"
@@ -978,13 +966,13 @@
                             <Storyboard x:Key="Storyboard.SelectionStates.Selected">
                                 <ColorAnimation Storyboard.TargetName="Root"
                                                 Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground.LightGrey}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground.LGrey}"/>
                                 <ColorAnimation Storyboard.TargetName="Root"
                                                 Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Foreground.LightGrey}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Foreground.LGrey}"/>
                                 <ColorAnimation Storyboard.TargetName="Content"
                                                 Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" 
-                                                Duration="0:0:0" To="{StaticResource Color.Default.Background}"/>
+                                                Duration="0:0:0" To="{StaticResource Color.Background}"/>
                             </Storyboard>
                         </ControlTemplate.Resources>
                         <Border x:Name="Root"
@@ -1024,7 +1012,7 @@
                 </Setter.Value>
             </Setter>
 
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground.LightGrey}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="1 1 1 1"/>
@@ -1137,8 +1125,8 @@
 
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
-            <Setter Property="Background" Value="{StaticResource Brush.Default.Background}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
+            <Setter Property="Background" Value="{StaticResource Brush.Background}"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0 0 0 0"/>
             <Setter Property="Margin" Value="8 4 4 4"/>
@@ -1170,7 +1158,7 @@
         </Style>
 
         <Style x:Key="Style.DataTemplate.TextBlock" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource Brush.Default.Foreground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Foreground}"/>
             <Setter Property="FontSize" Value="{StaticResource Double.Default.FontSize}"/>
         </Style>
 
